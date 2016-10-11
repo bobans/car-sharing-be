@@ -3,9 +3,7 @@ package rs.elfak.bobans.carsharing.be.utils;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import io.dropwizard.hibernate.UnitOfWork;
-import rs.elfak.bobans.carsharing.be.models.User;
-import rs.elfak.bobans.carsharing.be.models.dao.UserDAO;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
 
 import java.util.Optional;
 
@@ -14,20 +12,12 @@ import java.util.Optional;
  *
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
-public class SimpleAuthenticator implements Authenticator<BasicCredentials, User> {
-
-    private final UserDAO dao;
-
-    public SimpleAuthenticator(UserDAO dao) {
-        this.dao = dao;
-    }
+public class SimpleAuthenticator implements Authenticator<BasicCredentials, Credentials> {
 
     @Override
-    @UnitOfWork
-    public Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException {
-        User user = dao.findByUsername(credentials.getUsername());
-        if (user != null && user.getPassword().compareTo(credentials.getPassword()) == 0) {
-            return Optional.of(dao.findByUsername(credentials.getUsername()));
+    public Optional<Credentials> authenticate(BasicCredentials credentials) throws AuthenticationException {
+        if ("secret".equals(credentials.getPassword())) {
+            return Optional.of(new Credentials(credentials.getUsername()));
         }
         return Optional.empty();
     }

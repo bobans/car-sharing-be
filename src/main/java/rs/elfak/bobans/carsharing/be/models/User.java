@@ -1,5 +1,8 @@
 package rs.elfak.bobans.carsharing.be.models;
 
+import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -18,22 +21,34 @@ import java.security.Principal;
                 ),
                 @NamedQuery(
                         name = "User.findByUsername",
-                        query = "SELECT u FROM User u WHERE u.username = :username"
+                        query = "SELECT u FROM User u WHERE u.credentials.username = :username"
                 )
         }
 )
-public class User implements Principal {
+public class User {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @NotNull
-    @Column(unique = true)
-    private String username;
+    @OneToOne
+    private Credentials credentials;
 
     @NotNull
-    private String password;
+    @NotEmpty
+    private String email;
+
+    @NotNull
+    @NotEmpty
+    private String city;
+
+    @NotNull
+    private DateTime birthDate;
+
+    @NotNull
+    private DateTime driverLicenseDate;
+
+    private Car car;
 
     public User() {
     }
@@ -42,17 +57,27 @@ public class User implements Principal {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public Credentials getCredentials() {
+        return credentials;
     }
 
-    @Override
-    public String getName() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getCity() {
+        return city;
     }
 
+    public DateTime getBirthDate() {
+        return birthDate;
+    }
+
+    public DateTime getDriverLicenseDate() {
+        return driverLicenseDate;
+    }
+
+    public Car getCar() {
+        return car;
+    }
 }

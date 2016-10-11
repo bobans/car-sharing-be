@@ -9,9 +9,15 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.Make;
+import rs.elfak.bobans.carsharing.be.models.Model;
 import rs.elfak.bobans.carsharing.be.models.User;
-import rs.elfak.bobans.carsharing.be.models.dao.UserDAO;
+import rs.elfak.bobans.carsharing.be.models.dao.*;
+import rs.elfak.bobans.carsharing.be.resources.LoginResource;
+import rs.elfak.bobans.carsharing.be.resources.RegisterResource;
 import rs.elfak.bobans.carsharing.be.resources.UserResource;
+import rs.elfak.bobans.carsharing.be.utils.CarSharingUnauthorizedHandler;
 import rs.elfak.bobans.carsharing.be.utils.SimpleAuthenticator;
 
 /**
@@ -22,7 +28,10 @@ import rs.elfak.bobans.carsharing.be.utils.SimpleAuthenticator;
 public class CarSharingApplication extends Application<CarSharingConfiguration> {
 
     private final HibernateBundle<CarSharingConfiguration> hibernate = new HibernateBundle<CarSharingConfiguration>(
-            User.class
+            Credentials.class,
+            User.class,
+            Make.class,
+            Model.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {
@@ -57,12 +66,20 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
 
     private void registerHibernateResources(Environment environment) {
         SessionFactory sessionFactory = hibernate.getSessionFactory();
+        CredentialsDAO credentialsDAO = new CredentialsDAO(sessionFactory);
         UserDAO userDAO = new UserDAO(sessionFactory);
+        CarDAO carDAO = new CarDAO(sessionFactory);
+        MakeDAO makeDAO = new MakeDAO(sessionFactory);
+        ModelDAO modelDAO = new ModelDAO(sessionFactory);
         environment.jersey().register(new AuthDynamicFeature(
-                new BasicCredentialAuthFilter.Builder<User>()
-                    .setAuthenticator(new SimpleAuthenticator(userDAO))
+                new BasicCredentialAuthFilter.Builder<Credentials>()
+                    .setAuthenticator(new SimpleAuthenticator())
                     .setRealm("CarSharingSuperSecret")
+                    .setUnauthorizedHandler(new CarSharingUnauthorizedHandler())
+                    .setPrefix("Basic")
                     .buildAuthFilter()));
+        environment.jersey().register(new LoginResource());
+        environment.jersey().register(new RegisterResource(credentialsDAO));
         environment.jersey().register(new UserResource(userDAO));
         // TODO
 //        StationDAO stationDao = new StationDAO(sessionFactory);

@@ -10,8 +10,10 @@ import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -20,6 +22,7 @@ import java.util.List;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Path("/users")
+@Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
 
     private final UserDAO dao;
@@ -31,8 +34,7 @@ public class UserResource {
     @Timed
     @GET
     @UnitOfWork
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<User> getUsers() {
+    public List<User> getUsers(@Auth @Context SecurityContext context) {
         return dao.findAll();
     }
 
@@ -40,8 +42,7 @@ public class UserResource {
     @Path("/{username}")
     @GET
     @UnitOfWork
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserByUsername(@Auth @Valid @NotNull @PathParam("username") String username) {
+    public Response getUserByUsername(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username) {
         User user = dao.findByUsername(username);
         if (user != null) {
             return Response.ok(user).build();
@@ -52,10 +53,9 @@ public class UserResource {
     @Timed
     @POST
     @UnitOfWork
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(@NotNull User user) {
-        if (dao.findByUsername(user.getUsername()) == null) {
+        if (dao.findByUsername(user.getCredentials().getUsername()) == null) {
             long id = dao.save(user);
             if (id != 0) {
                 return Response.created(null).build();
