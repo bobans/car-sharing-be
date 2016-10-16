@@ -9,14 +9,9 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
-import rs.elfak.bobans.carsharing.be.models.Credentials;
-import rs.elfak.bobans.carsharing.be.models.Make;
-import rs.elfak.bobans.carsharing.be.models.Model;
-import rs.elfak.bobans.carsharing.be.models.User;
+import rs.elfak.bobans.carsharing.be.models.*;
 import rs.elfak.bobans.carsharing.be.models.dao.*;
-import rs.elfak.bobans.carsharing.be.resources.LoginResource;
-import rs.elfak.bobans.carsharing.be.resources.RegisterResource;
-import rs.elfak.bobans.carsharing.be.resources.UserResource;
+import rs.elfak.bobans.carsharing.be.resources.*;
 import rs.elfak.bobans.carsharing.be.utils.CarSharingUnauthorizedHandler;
 import rs.elfak.bobans.carsharing.be.utils.SimpleAuthenticator;
 
@@ -30,6 +25,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
     private final HibernateBundle<CarSharingConfiguration> hibernate = new HibernateBundle<CarSharingConfiguration>(
             Credentials.class,
             User.class,
+            Car.class,
             Make.class,
             Model.class
     ) {
@@ -74,13 +70,15 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new AuthDynamicFeature(
                 new BasicCredentialAuthFilter.Builder<Credentials>()
                     .setAuthenticator(new SimpleAuthenticator())
-                    .setRealm("CarSharingSuperSecret")
+                    .setRealm("CarSharingRealm")
                     .setUnauthorizedHandler(new CarSharingUnauthorizedHandler())
                     .setPrefix("Basic")
                     .buildAuthFilter()));
         environment.jersey().register(new LoginResource());
         environment.jersey().register(new RegisterResource(credentialsDAO));
         environment.jersey().register(new UserResource(userDAO));
+        environment.jersey().register(new CarResource(carDAO));
+        environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
         // TODO
 //        StationDAO stationDao = new StationDAO(sessionFactory);
 //        LineDAO lineDAO = new LineDAO(sessionFactory, stationDao);

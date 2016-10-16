@@ -5,7 +5,8 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.security.Principal;
+import javax.validation.constraints.Null;
+import java.util.List;
 
 /**
  * Created by Boban Stajic.
@@ -26,6 +27,9 @@ import java.security.Principal;
         }
 )
 public class User {
+
+    public static final int TYPE_PASSENGER = 1;
+    public static final int TYPE_DRIVER = 2;
 
     @Id
     @GeneratedValue
@@ -48,7 +52,12 @@ public class User {
     @NotNull
     private DateTime driverLicenseDate;
 
-    private Car car;
+    @NotNull
+    private int userType;
+
+    @Null
+    @OneToMany
+    private List<Car> cars;
 
     public User() {
     }
@@ -77,7 +86,12 @@ public class User {
         return driverLicenseDate;
     }
 
-    public Car getCar() {
-        return car;
+    public List<Car> getCars() {
+        return cars;
     }
+
+    public int getUserType() {
+        return userType;
+    }
+
 }

@@ -1,7 +1,6 @@
 package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.User;
 import rs.elfak.bobans.carsharing.be.models.dao.UserDAO;
@@ -34,7 +33,7 @@ public class UserResource {
     @Timed
     @GET
     @UnitOfWork
-    public List<User> getUsers(@Auth @Context SecurityContext context) {
+    public List<User> getUsers(@Context SecurityContext context) {
         return dao.findAll();
     }
 

@@ -32,8 +32,12 @@ public class ModelDAO extends AbstractDAO<Model> implements DAO<Model> {
         return persist(obj).getId();
     }
 
-    public List<Model> findByMake(int makeId) {
+    public List<Model> findByMake(long makeId) {
         return list(namedQuery("Model.findByMake").setParameter("makeId", makeId));
+    }
+
+    public Model findByMakeAndModel(long makeId, long modelId) {
+        return uniqueResult(namedQuery("Model.findByMakeAndModel").setParameter("makeId", makeId).setParameter("modelId", modelId));
     }
 
 }

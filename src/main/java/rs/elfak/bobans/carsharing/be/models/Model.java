@@ -20,6 +20,10 @@ import javax.validation.constraints.NotNull;
                 @NamedQuery(
                         name = "Model.findByMake",
                         query = "SELECT m FROM Model m WHERE m.make.id = :makeId"
+                ),
+                @NamedQuery(
+                        name = "Model.findByMakeAndModel",
+                        query = "SELECT m FROM Model m WHERE m.make.id = :makeId AND m.id = :modelId"
                 )
         }
 )
