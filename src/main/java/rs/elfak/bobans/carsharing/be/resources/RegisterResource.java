@@ -31,7 +31,7 @@ public class RegisterResource {
     @Timed
     @POST
     @UnitOfWork
-    public Response login(@NotNull Credentials credentials) {
+    public Response register(@NotNull Credentials credentials) {
         if (dao.findByUsername(credentials.getUsername()) == null) {
             long id = dao.save(credentials);
             if (id != 0) {

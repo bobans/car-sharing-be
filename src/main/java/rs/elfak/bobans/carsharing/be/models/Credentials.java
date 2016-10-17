@@ -42,6 +42,9 @@ public class Credentials implements Principal {
     @Length(min = 8)
     private String password;
 
+    @OneToOne
+    private User user;
+
     @Override
     @JsonIgnore
     public String getName() {
@@ -67,4 +70,11 @@ public class Credentials implements Principal {
         return password;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

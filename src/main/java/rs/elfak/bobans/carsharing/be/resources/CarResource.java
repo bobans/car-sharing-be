@@ -3,9 +3,13 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Car;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.User;
 import rs.elfak.bobans.carsharing.be.models.dao.CarDAO;
+import rs.elfak.bobans.carsharing.be.models.dao.UserDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
+import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -24,34 +28,42 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class CarResource {
 
-    private final CarDAO dao;
+    private final CarDAO carDAO;
+    private final UserDAO userDAO;
 
-    public CarResource(CarDAO dao) {
-        this.dao = dao;
+    public CarResource(CarDAO carDAO, UserDAO userDAO) {
+        this.carDAO = carDAO;
+        this.userDAO = userDAO;
     }
 
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     public List<Car> getCars(@Context SecurityContext context) {
-        return dao.findAll();
+        return carDAO.findAll();
     }
 
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     @Path("/{carId}")
     public Car getCarById(@Context SecurityContext context, @PathParam("carId") long carId) {
-        return dao.findById(carId);
+        return carDAO.findById(carId);
     }
 
     @Timed
     @POST
     @UnitOfWork
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addCar(@NotNull @Valid Car car) {
-        long id = dao.save(car);
+    public Response addCar(@Context SecurityContext context, @NotNull @Valid Car car) {
+        long id = carDAO.save(car);
         if (id != 0) {
+            User user = ((Credentials) context.getUserPrincipal()).getUser();
+            user.addCar(car);
+            userDAO.save(user);
             return Response.created(null).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(400, "Bad request")).build();

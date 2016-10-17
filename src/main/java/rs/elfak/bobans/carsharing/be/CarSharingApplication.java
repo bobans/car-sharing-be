@@ -5,6 +5,7 @@ import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
@@ -67,27 +68,21 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         CarDAO carDAO = new CarDAO(sessionFactory);
         MakeDAO makeDAO = new MakeDAO(sessionFactory);
         ModelDAO modelDAO = new ModelDAO(sessionFactory);
+
+        SimpleAuthenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernate)
+                .create(SimpleAuthenticator.class, CredentialsDAO.class, credentialsDAO);
+
         environment.jersey().register(new AuthDynamicFeature(
                 new BasicCredentialAuthFilter.Builder<Credentials>()
-                    .setAuthenticator(new SimpleAuthenticator())
+                    .setAuthenticator(authenticator)
                     .setRealm("CarSharingRealm")
                     .setUnauthorizedHandler(new CarSharingUnauthorizedHandler())
                     .setPrefix("Basic")
                     .buildAuthFilter()));
         environment.jersey().register(new LoginResource());
         environment.jersey().register(new RegisterResource(credentialsDAO));
-        environment.jersey().register(new UserResource(userDAO));
-        environment.jersey().register(new CarResource(carDAO));
+        environment.jersey().register(new UserResource(userDAO, credentialsDAO));
+        environment.jersey().register(new CarResource(carDAO, userDAO));
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
-        // TODO
-//        StationDAO stationDao = new StationDAO(sessionFactory);
-//        LineDAO lineDAO = new LineDAO(sessionFactory, stationDao);
-//        TrainDAO trainDAO = new TrainDAO(sessionFactory, lineDAO);
-//        ReservationsDAO reservationsDAO = new ReservationsDAO(sessionFactory);
-//        environment.jersey().register(new StationResource(stationDao));
-//        environment.jersey().register(new LineResource(lineDAO));
-//        environment.jersey().register(new TrainResource(new TimeTableManipulator(trainDAO, lineDAO, reservationsDAO)));
-//        environment.jersey().register(new ReservationsResource(reservationsDAO));
-//        environment.jersey().register(ParamConverterProviderImpl.class);
     }
 }

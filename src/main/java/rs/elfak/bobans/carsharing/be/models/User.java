@@ -21,8 +21,12 @@ import java.util.List;
                         query = "SELECT u FROM User u"
                 ),
                 @NamedQuery(
+                        name = "User.findAllExceptMe",
+                        query = "SELECT u FROM User u WHERE u.username <> :username"
+                ),
+                @NamedQuery(
                         name = "User.findByUsername",
-                        query = "SELECT u FROM User u WHERE u.credentials.username = :username"
+                        query = "SELECT u FROM User u WHERE u.username = :username"
                 )
         }
 )
@@ -35,12 +39,17 @@ public class User {
     @GeneratedValue
     private long id;
 
-    @OneToOne
-    private Credentials credentials;
+    @NotNull
+    @NotEmpty
+    private String username;
 
     @NotNull
     @NotEmpty
     private String email;
+
+    @NotNull
+    @NotEmpty
+    private String name;
 
     @NotNull
     @NotEmpty
@@ -66,12 +75,16 @@ public class User {
         return id;
     }
 
-    public Credentials getCredentials() {
-        return credentials;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getCity() {
@@ -86,12 +99,16 @@ public class User {
         return driverLicenseDate;
     }
 
+    public int getUserType() {
+        return userType;
+    }
+
     public List<Car> getCars() {
         return cars;
     }
 
-    public int getUserType() {
-        return userType;
+    public void addCar(Car car) {
+        cars.add(car);
     }
 
 }

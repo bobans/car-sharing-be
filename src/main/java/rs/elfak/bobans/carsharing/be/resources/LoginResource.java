@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,7 +25,8 @@ public class LoginResource {
     @Timed
     @POST
     @UnitOfWork
-    public Response login(@Auth @Context SecurityContext context) {
+    @PermitAll
+    public Response login(@Context SecurityContext context) {
         return Response.ok().build();
     }
 

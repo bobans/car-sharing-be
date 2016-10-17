@@ -7,6 +7,7 @@ import rs.elfak.bobans.carsharing.be.models.Model;
 import rs.elfak.bobans.carsharing.be.models.dao.MakeDAO;
 import rs.elfak.bobans.carsharing.be.models.dao.ModelDAO;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -34,6 +35,7 @@ public class MakeModelResource {
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     public List<Make> getMakes() {
         return makeDAO.findAll();
     }
@@ -41,6 +43,7 @@ public class MakeModelResource {
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     @Path("/{makeId}")
     public Make getMakeById(@PathParam("makeId") long makeId) {
         return makeDAO.findById(makeId);
@@ -49,6 +52,7 @@ public class MakeModelResource {
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     @Path("/{makeId}/models")
     public List<Model> getModelsByMake(@PathParam("makeId") long makeId) {
         return modelDAO.findByMake(makeId);
@@ -57,6 +61,7 @@ public class MakeModelResource {
     @Timed
     @GET
     @UnitOfWork
+    @PermitAll
     @Path("/{makeId}/models/{modelId}")
     public Model getModelsByMake(@PathParam("makeId") long makeId, @PathParam("modelId") long modelId) {
         return modelDAO.findByMakeAndModel(makeId, modelId);
