@@ -3,6 +3,8 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.Token;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.POST;
@@ -12,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.Base64;
 
 /**
  * Created by Boban Stajic.
@@ -27,7 +30,10 @@ public class LoginResource {
     @UnitOfWork
     @PermitAll
     public Response login(@Context SecurityContext context) {
-        return Response.ok().build();
+        Credentials credentials = (Credentials) context.getUserPrincipal();
+        String token = credentials.getName() + ":" + credentials.getPassword();
+        token = "Basic " + Base64.getEncoder().encodeToString(token.getBytes());
+        return Response.ok(new Token(token)).build();
     }
 
 }
