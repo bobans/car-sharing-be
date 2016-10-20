@@ -3,6 +3,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.Token;
 import rs.elfak.bobans.carsharing.be.models.dao.CredentialsDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
@@ -12,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Base64;
 
 /**
  * Created by Boban Stajic.
@@ -35,7 +37,9 @@ public class RegisterResource {
         if (dao.findByUsername(credentials.getUsername()) == null) {
             long id = dao.save(credentials);
             if (id != 0) {
-                return Response.created(null).build();
+                String token = credentials.getName() + ":" + credentials.getPassword();
+                token = "Basic " + Base64.getEncoder().encodeToString(token.getBytes());
+                return Response.created(null).entity(new Token(token)).build();
             }
         } else {
             return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(409, "Username already exists")).build();
