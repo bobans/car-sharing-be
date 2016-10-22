@@ -21,7 +21,7 @@ import java.util.List;
                         query = "SELECT u FROM User u"
                 ),
                 @NamedQuery(
-                        name = "User.findAllExceptMe",
+                        name = "User.findOther",
                         query = "SELECT u FROM User u WHERE u.username <> :username"
                 ),
                 @NamedQuery(

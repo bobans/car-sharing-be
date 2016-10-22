@@ -23,7 +23,7 @@ public class UserDAO extends AbstractDAO<User> implements DAO<User> {
     }
 
     public List<User> findAllExceptMe(String username) {
-        return list(namedQuery("User.findAllExceptMe").setParameter("username", username));
+        return list(namedQuery("User.findOther").setParameter("username", username));
     }
 
     @Override
