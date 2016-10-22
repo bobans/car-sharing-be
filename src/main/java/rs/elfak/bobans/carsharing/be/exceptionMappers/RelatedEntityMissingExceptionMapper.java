@@ -3,7 +3,7 @@ package rs.elfak.bobans.carsharing.be.exceptionMappers;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.jersey.errors.ErrorMessage;
-import rs.elfak.bobans.carsharing.be.models.dao.RelatedEntityMissingException;
+import rs.elfak.bobans.carsharing.be.models.daos.RelatedEntityMissingException;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

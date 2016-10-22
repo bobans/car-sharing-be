@@ -5,8 +5,8 @@ import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Car;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.User;
-import rs.elfak.bobans.carsharing.be.models.dao.CarDAO;
-import rs.elfak.bobans.carsharing.be.models.dao.UserDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.CarDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
 import javax.annotation.security.PermitAll;

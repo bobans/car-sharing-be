@@ -1,4 +1,4 @@
-package rs.elfak.bobans.carsharing.be.models.dao;
+package rs.elfak.bobans.carsharing.be.models.daos;
 
 import java.util.List;
 

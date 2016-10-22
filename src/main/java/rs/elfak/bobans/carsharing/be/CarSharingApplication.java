@@ -11,7 +11,7 @@ import io.dropwizard.setup.Environment;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
 import rs.elfak.bobans.carsharing.be.models.*;
-import rs.elfak.bobans.carsharing.be.models.dao.*;
+import rs.elfak.bobans.carsharing.be.models.daos.*;
 import rs.elfak.bobans.carsharing.be.resources.*;
 import rs.elfak.bobans.carsharing.be.utils.CarSharingUnauthorizedHandler;
 import rs.elfak.bobans.carsharing.be.utils.SimpleAuthenticator;

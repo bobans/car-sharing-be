@@ -4,8 +4,8 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Make;
 import rs.elfak.bobans.carsharing.be.models.Model;
-import rs.elfak.bobans.carsharing.be.models.dao.MakeDAO;
-import rs.elfak.bobans.carsharing.be.models.dao.ModelDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.MakeDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.ModelDAO;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
