@@ -1,1 +1,1 @@
-web: java -cp target/classes/:target/dependency/* rs.elfak.bobans.carsharing.be.CarSharingApplication
+web: java -Ddw.server.connector.port=$PORT -cp target/classes/:target/dependency/* rs.elfak.bobans.carsharing.be.CarSharingApplication server config.yml
