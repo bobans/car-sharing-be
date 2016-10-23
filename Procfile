@@ -1,1 +1,1 @@
-web: java -cp target/classes:target/dependency/* rs.elfak.bobans.carsharing.be.CarSharingApplication -p 9000
+web: java -cp target/classes:target/dependency/* rs.elfak.bobans.carsharing.be.CarSharingApplication
