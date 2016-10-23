@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* car-sharing -p 9000
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* CarSharingApplication -p 9000
