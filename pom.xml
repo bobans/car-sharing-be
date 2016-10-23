@@ -110,6 +110,9 @@
                     <includes>
                         <include>target/dependency/newrelic-agent.jar</include>
                     </includes>
+                    <processTypes>
+                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* rs.elfak.bobans.carsharing.be.CarSharingApplication server config.yml</web>
+                    </processTypes>
                 </configuration>
             </plugin>
         </plugins>
