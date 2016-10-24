@@ -62,7 +62,7 @@ public class UserResource {
     @UnitOfWork
     @PermitAll
     public Response getCurrentUser(@Context SecurityContext context) {
-        User user = dao.findByUsername(((User) context.getUserPrincipal()).getUsername());
+        User user = dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
             return Response.ok(user).build();
         }
