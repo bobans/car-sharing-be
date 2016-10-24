@@ -57,6 +57,19 @@ public class UserResource {
     }
 
     @Timed
+    @Path("/me")
+    @GET
+    @UnitOfWork
+    @PermitAll
+    public Response getCurrentUser(@Context SecurityContext context) {
+        User user = dao.findByUsername(((User) context.getUserPrincipal()).getUsername());
+        if (user != null) {
+            return Response.ok(user).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(404, "User not found")).build();
+    }
+
+    @Timed
     @POST
     @UnitOfWork
     @PermitAll
