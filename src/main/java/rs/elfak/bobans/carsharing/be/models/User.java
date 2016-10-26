@@ -58,7 +58,7 @@ public class User {
     @NotNull
     private DateTime birthDate;
 
-    @NotNull
+    @Null
     private DateTime driverLicenseDate;
 
     @NotNull
