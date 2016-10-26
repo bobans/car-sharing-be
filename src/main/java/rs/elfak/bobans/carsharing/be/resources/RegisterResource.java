@@ -40,11 +40,12 @@ public class RegisterResource {
                 String token = credentials.getName() + ":" + credentials.getPassword();
                 token = "Basic " + Base64.getEncoder().encodeToString(token.getBytes());
                 return Response.created(null).entity(new Token(token)).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Bad request")).build();
             }
         } else {
-            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(409, "Username already exists")).build();
+            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(Response.Status.CONFLICT.getStatusCode(), "Username already exists")).build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(400, "Bad request")).build();
     }
 
 }

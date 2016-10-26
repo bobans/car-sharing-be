@@ -66,7 +66,7 @@ public class CarResource {
             userDAO.save(user);
             return Response.created(null).build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(400, "Bad request")).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save car")).build();
     }
 
 }

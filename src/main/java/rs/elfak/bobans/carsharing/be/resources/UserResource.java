@@ -53,7 +53,7 @@ public class UserResource {
         if (user != null) {
             return Response.ok(user).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(404, "User not found")).build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "User not found")).build();
     }
 
     @Timed
@@ -66,7 +66,7 @@ public class UserResource {
         if (user != null) {
             return Response.ok(user).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(404, "User not found")).build();
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "User not found")).build();
     }
 
     @Timed
@@ -84,14 +84,15 @@ public class UserResource {
                     credentials.setUser(user);
                     credentialsDAO.save(credentials);
                     return Response.created(null).build();
+                } else {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save user")).build();
                 }
             } else {
-                return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(409, "Username already exists")).build();
+                return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(Response.Status.CONFLICT.getStatusCode(), "Username already exists")).build();
             }
         } else {
-            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(409, "User already created")).build();
+            return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(Response.Status.CONFLICT.getStatusCode(), "User already created")).build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(400, "Bad request")).build();
     }
 
 }
