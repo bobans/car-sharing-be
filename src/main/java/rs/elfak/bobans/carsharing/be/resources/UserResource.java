@@ -76,17 +76,14 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(@Context SecurityContext context, @NotNull User user) {
         if (((Credentials) context.getUserPrincipal()).getUser() == null) {
-            if (dao.findByUsername(user.getUsername()) == null) {
-                if (((Credentials) context.getUserPrincipal()).getUsername().equals(user.getUsername())) {
-                    long id = dao.save(user);
-                    if (id != 0) {
-                        Credentials credentials = (Credentials) context.getUserPrincipal();
-                        credentials.setUser(user);
-                        credentialsDAO.save(credentials);
-                        return Response.created(null).build();
-                    }
-                } else {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(400, "Username must be same as authenticated user")).build();
+            if (dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername()) == null) {
+                user.setUsername(((Credentials) context.getUserPrincipal()).getUsername());
+                long id = dao.save(user);
+                if (id != 0) {
+                    Credentials credentials = (Credentials) context.getUserPrincipal();
+                    credentials.setUser(user);
+                    credentialsDAO.save(credentials);
+                    return Response.created(null).build();
                 }
             } else {
                 return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(409, "Username already exists")).build();
