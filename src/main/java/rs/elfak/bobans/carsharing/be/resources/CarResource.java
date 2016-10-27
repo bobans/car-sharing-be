@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,8 +41,12 @@ public class CarResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public List<Car> getCars(@Context SecurityContext context) {
-        return carDAO.findAll();
+    public List<Car> getUserCars(@Context SecurityContext context) {
+        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        if (user != null) {
+            return user.getCars();
+        }
+        return new ArrayList<>();
     }
 
     @Timed
