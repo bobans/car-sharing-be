@@ -58,13 +58,11 @@ public class User {
     @NotNull
     private DateTime birthDate;
 
-    @Null
     private DateTime driverLicenseDate;
 
     @NotNull
     private int userType;
 
-    @Null
     @OneToMany
     private List<Car> cars;
 
