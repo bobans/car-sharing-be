@@ -51,6 +51,8 @@ public class User {
     @NotEmpty
     private String name;
 
+    private String photoUrl;
+
     @NotNull
     @NotEmpty
     private String city;
@@ -87,6 +89,14 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public String getCity() {
