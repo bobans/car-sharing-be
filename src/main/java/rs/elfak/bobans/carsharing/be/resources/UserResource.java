@@ -48,12 +48,8 @@ public class UserResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public Response getUserByUsername(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username) {
-        User user = dao.findByUsername(username);
-        if (user != null) {
-            return Response.ok(user).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "User not found")).build();
+    public User getUserByUsername(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username) {
+        return dao.findByUsername(username);
     }
 
     @Timed
@@ -61,12 +57,8 @@ public class UserResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public Response getCurrentUser(@Context SecurityContext context) {
-        User user = dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
-        if (user != null) {
-            return Response.ok(user).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "User not found")).build();
+    public User getCurrentUser(@Context SecurityContext context) {
+        return dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
     }
 
     @Timed

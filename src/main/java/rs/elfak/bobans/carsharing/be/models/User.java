@@ -65,7 +65,7 @@ public class User {
     @NotNull
     private int userType;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 
     public User() {

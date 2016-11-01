@@ -66,10 +66,13 @@ public class CarResource {
     public Response addCar(@Context SecurityContext context, @NotNull @Valid Car car) {
         long id = carDAO.save(car);
         if (id != 0) {
-            User user = ((Credentials) context.getUserPrincipal()).getUser();
-            user.addCar(car);
-            userDAO.save(user);
-            return Response.created(null).build();
+            User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+            if (user != null) {
+                user.addCar(car);
+                userDAO.save(user);
+                return Response.created(null).build();
+            }
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not created")).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save car")).build();
     }
