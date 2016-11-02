@@ -2,7 +2,9 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
+import rs.elfak.bobans.carsharing.be.utils.Constants;
 
 import java.util.List;
 
@@ -38,6 +40,25 @@ public class SharedDriveDAO extends AbstractDAO<SharedDrive> implements DAO<Shar
 
     public List<SharedDrive> findByUser(String username) {
         return list(namedQuery("SharedDrive.findByUser").setParameter("username", username));
+    }
+
+    public List<SharedDrive> filterDrives(DateTime date, String repeatDays, int offset, int limit) {
+        String days = "";
+        boolean lastQ = false;
+        for (int i=0; i< Constants.DAYS_IN_WEEK.length; i++) {
+            if (repeatDays.contains(Constants.DAYS_IN_WEEK[i])) {
+                days += Constants.DAYS_IN_WEEK[i];
+                lastQ = false;
+            } else if (!lastQ) {
+                days += "%";
+                lastQ = true;
+            }
+        }
+        return list(namedQuery("SharedDrive.filter")
+                .setParameter("date", date)
+                .setParameter("days", days)
+                .setFirstResult(offset)
+                .setMaxResults(limit));
     }
 
 }

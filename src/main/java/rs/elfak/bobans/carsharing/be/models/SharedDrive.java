@@ -21,14 +21,14 @@ import java.util.List;
                 @NamedQuery(
                         name = "SharedDrive.findByUser",
                         query = "SELECT sd FROM SharedDrive sd WHERE sd.user.username=:username ORDER BY sd.id DESC"
+                ),
+                @NamedQuery(
+                        name = "SharedDrive.filter",
+                        query = "SELECT sd FROM SharedDrive sd WHERE sd.time.date = :date OR sd.time.repeat = TRUE AND sd.time.date < :date AND sd.time.repeatDays LIKE :days"
                 )
         }
 )
 public class SharedDrive {
-
-    public static final int FLAG_NEGATIVE = -1;
-    public static final int FLAG_NEUTRAL = 0;
-    public static final int FLAG_POSITIVE = 1;
 
     @Id
     @GeneratedValue
@@ -56,16 +56,16 @@ public class SharedDrive {
     private List<String> stops;
 
     @NotNull
-    private int music;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DrivePreferences preferences;
 
     @NotNull
-    private int pets;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DriveTime time;
 
     @NotNull
-    private int smoking;
-
-    @NotNull
-    private int talk;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DrivePrice price;
 
     public long getId() {
         return id;
@@ -91,20 +91,16 @@ public class SharedDrive {
         return stops;
     }
 
-    public int getMusic() {
-        return music;
+    public DrivePreferences getPreferences() {
+        return preferences;
     }
 
-    public int getPets() {
-        return pets;
+    public DriveTime getTime() {
+        return time;
     }
 
-    public int getSmoking() {
-        return smoking;
-    }
-
-    public int getTalk() {
-        return talk;
+    public DrivePrice getPrice() {
+        return price;
     }
 
 }

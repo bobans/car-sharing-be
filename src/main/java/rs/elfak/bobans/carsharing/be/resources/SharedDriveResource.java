@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
+import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
@@ -67,6 +68,15 @@ public class SharedDriveResource {
             return Response.created(null).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save drive")).build();
+    }
+
+    @Timed
+    @GET
+    @UnitOfWork
+    @PermitAll
+    @Path("/filter")
+    public List<SharedDrive> filterDrives(@Context SecurityContext context, @QueryParam("date") String date, @QueryParam("repeatDays") String repeatDays, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+        return dao.filterDrives(DateTime.parse(date), repeatDays, offset, limit);
     }
 
 }

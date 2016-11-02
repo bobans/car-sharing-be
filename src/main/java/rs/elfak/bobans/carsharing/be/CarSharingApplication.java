@@ -29,7 +29,10 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
             Car.class,
             Make.class,
             Model.class,
-            SharedDrive.class
+            SharedDrive.class,
+            DrivePreferences.class,
+            DriveTime.class,
+            DrivePrice.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {
