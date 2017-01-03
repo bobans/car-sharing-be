@@ -23,6 +23,7 @@ public class DriveTime {
     @NotNull
     private boolean repeat;
 
+    // MTWRFUS
     @Length(max = 7)
     private String repeatDays;
 

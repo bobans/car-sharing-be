@@ -1,7 +1,6 @@
 package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
-import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Token;

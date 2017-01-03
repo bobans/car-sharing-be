@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
+import rs.elfak.bobans.carsharing.be.models.User;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
@@ -77,6 +78,24 @@ public class SharedDriveResource {
     @Path("/filter")
     public List<SharedDrive> filterDrives(@Context SecurityContext context, @QueryParam("date") String date, @QueryParam("repeatDays") String repeatDays, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
         return dao.filterDrives(DateTime.parse(date), repeatDays, offset, limit);
+    }
+
+    @Timed
+    @POST
+    @UnitOfWork
+    @PermitAll
+    @Path("{id}/passenger")
+    public Response addPassengerToDrive(@Context SecurityContext context, @PathParam("id") long driveId, @NotNull @Valid User passenger) {
+        SharedDrive drive = dao.findById(driveId);
+        if (drive != null) {
+            drive.addPassenger(passenger);
+            long id = dao.save(drive);
+            if (id > 0) {
+                return Response.ok().build();
+            }
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save drive")).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "Drive not found")).build();
     }
 
 }

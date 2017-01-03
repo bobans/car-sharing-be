@@ -67,12 +67,22 @@ public class SharedDrive {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private DrivePrice price;
 
+    @NotNull
+    private int seats;
+
+    @ManyToMany
+    private List<User> passengers;
+
     public long getId() {
         return id;
     }
 
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Car getCar() {
@@ -101,6 +111,26 @@ public class SharedDrive {
 
     public DrivePrice getPrice() {
         return price;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public List<User> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<User> passengers) {
+        this.passengers = passengers;
+    }
+
+    public void addPassenger(User passenger) {
+        this.passengers.add(passenger);
     }
 
 }
