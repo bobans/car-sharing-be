@@ -51,6 +51,16 @@ public class SharedDriveResource {
     }
 
     @Timed
+    @DELETE
+    @UnitOfWork
+    @PermitAll
+    @Path("/{id}")
+    public Response deleteDrive(@Context SecurityContext context, @PathParam("id") long id) {
+        dao.delete(id);
+        return Response.ok().build();
+    }
+
+    @Timed
     @GET
     @UnitOfWork
     @PermitAll

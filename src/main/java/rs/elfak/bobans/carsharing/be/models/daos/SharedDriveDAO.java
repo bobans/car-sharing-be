@@ -29,6 +29,10 @@ public class SharedDriveDAO extends AbstractDAO<SharedDrive> implements DAO<Shar
         return get(id);
     }
 
+    public void delete(long id) {
+        currentSession().delete(findById(id));
+    }
+
     @Override
     public long save(SharedDrive obj) {
         return persist(obj).getId();
