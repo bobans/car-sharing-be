@@ -71,7 +71,7 @@ public class SharedDrive {
     private int seats;
 
     @ManyToMany
-    private List<User> passengers;
+    private List<Passenger> passengers;
 
     public long getId() {
         return id;
@@ -121,15 +121,15 @@ public class SharedDrive {
         this.seats = seats;
     }
 
-    public List<User> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<User> passengers) {
+    public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
 
-    public void addPassenger(User passenger) {
+    public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
     }
 

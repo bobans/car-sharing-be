@@ -32,7 +32,8 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
             SharedDrive.class,
             DrivePreferences.class,
             DriveTime.class,
-            DrivePrice.class
+            DrivePrice.class,
+            Passenger.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {
@@ -73,6 +74,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         MakeDAO makeDAO = new MakeDAO(sessionFactory);
         ModelDAO modelDAO = new ModelDAO(sessionFactory);
         SharedDriveDAO driveDAO = new SharedDriveDAO(sessionFactory);
+        PassengerDAO passengerDAO = new PassengerDAO(sessionFactory);
 
         SimpleAuthenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernate)
                 .create(SimpleAuthenticator.class, CredentialsDAO.class, credentialsDAO);
@@ -89,6 +91,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new UserResource(userDAO, credentialsDAO));
         environment.jersey().register(new CarResource(carDAO, userDAO));
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
-        environment.jersey().register(new SharedDriveResource(driveDAO));
+        environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO));
     }
 }

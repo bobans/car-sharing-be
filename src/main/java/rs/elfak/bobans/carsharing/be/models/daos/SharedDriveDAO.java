@@ -3,6 +3,7 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
+import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.utils.Constants;
 
@@ -29,8 +30,8 @@ public class SharedDriveDAO extends AbstractDAO<SharedDrive> implements DAO<Shar
         return get(id);
     }
 
-    public void delete(long id) {
-        currentSession().delete(findById(id));
+    public void delete(SharedDrive drive) {
+        currentSession().delete(drive);
     }
 
     @Override

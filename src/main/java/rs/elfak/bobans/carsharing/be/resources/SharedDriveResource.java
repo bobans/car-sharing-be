@@ -3,9 +3,13 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import org.joda.time.DateTime;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.models.User;
+import rs.elfak.bobans.carsharing.be.models.daos.PassengerDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
 import javax.annotation.security.PermitAll;
@@ -28,9 +32,13 @@ import java.util.List;
 public class SharedDriveResource {
 
     private final SharedDriveDAO dao;
+    private final UserDAO userDAO;
+    private final PassengerDAO passengerDAO;
 
-    public SharedDriveResource(SharedDriveDAO dao) {
+    public SharedDriveResource(SharedDriveDAO dao, UserDAO userDAO, PassengerDAO passengerDAO) {
         this.dao = dao;
+        this.userDAO = userDAO;
+        this.passengerDAO = passengerDAO;
     }
 
     @Timed
@@ -56,8 +64,74 @@ public class SharedDriveResource {
     @PermitAll
     @Path("/{id}")
     public Response deleteDrive(@Context SecurityContext context, @PathParam("id") long id) {
-        dao.delete(id);
-        return Response.ok().build();
+        SharedDrive drive = dao.findById(id);
+        if (drive != null) {
+            dao.delete(drive);
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "Drive not found")).build();
+    }
+
+    @Timed
+    @POST
+    @UnitOfWork
+    @PermitAll
+    @Path("/{id}/request")
+    public Response request(@Context SecurityContext context, @PathParam("id") long id) {
+        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        if (user != null) {
+            SharedDrive drive = dao.findById(id);
+            if (drive != null) {
+                boolean exists = false;
+                for (Passenger passenger : drive.getPassengers()) {
+                    if (passenger.getUser().getId() == user.getId()) {
+                        exists = true;
+                    }
+                }
+                if (!exists) {
+                    Passenger passenger = new Passenger(user);
+                    long passengerId = passengerDAO.save(passenger);
+                    if (passengerId != -1) {
+                        drive.addPassenger(passenger);
+                        dao.save(drive);
+                        return Response.created(null).build();
+                    }
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Some error happened")).build();
+                }
+                return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new ResponseMessage(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Already requested")).build();
+            }
+            return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "Drive does not exist")).build();
+        }
+        return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "User does not exist")).build();
+    }
+
+    @Timed
+    @POST
+    @UnitOfWork
+    @PermitAll
+    @Path("/{id}/request/cancel")
+    public Response cancelRequest(@Context SecurityContext context, @PathParam("id") long id) {
+        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        if (user != null) {
+            SharedDrive drive = dao.findById(id);
+            if (drive != null) {
+                boolean exists = false;
+                List<Passenger> passengers = drive.getPassengers();
+                for (int i=passengers.size()-1; i>=0; i--) {
+                    if (passengers.get(i).getUser().getId() == user.getId()) {
+                        exists = true;
+                        passengers.remove(i);
+                    }
+                }
+                if (exists) {
+                    drive.setPassengers(passengers);
+                    dao.save(drive);
+                }
+                return Response.ok().build();
+            }
+            return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "Drive does not exist")).build();
+        }
+        return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "User does not exist")).build();
     }
 
     @Timed
@@ -88,24 +162,6 @@ public class SharedDriveResource {
     @Path("/filter")
     public List<SharedDrive> filterDrives(@Context SecurityContext context, @QueryParam("date") String date, @QueryParam("repeatDays") String repeatDays, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
         return dao.filterDrives(DateTime.parse(date), repeatDays, offset, limit);
-    }
-
-    @Timed
-    @POST
-    @UnitOfWork
-    @PermitAll
-    @Path("{id}/passenger")
-    public Response addPassengerToDrive(@Context SecurityContext context, @PathParam("id") long driveId, @NotNull @Valid User passenger) {
-        SharedDrive drive = dao.findById(driveId);
-        if (drive != null) {
-            drive.addPassenger(passenger);
-            long id = dao.save(drive);
-            if (id > 0) {
-                return Response.ok().build();
-            }
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save drive")).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).entity(new ResponseMessage(Response.Status.NOT_FOUND.getStatusCode(), "Drive not found")).build();
     }
 
 }
