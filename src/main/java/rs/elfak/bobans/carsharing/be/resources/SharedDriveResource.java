@@ -73,6 +73,36 @@ public class SharedDriveResource {
     }
 
     @Timed
+    @PUT
+    @UnitOfWork
+    @PermitAll
+    @Path("/{driveId}/request/{passengerId}/{status}")
+    public Response updateRequest(@Context SecurityContext context,
+                                  @PathParam("driveId") long driveId,
+                                  @PathParam("passengerId") long passengerId,
+                                  @PathParam("status") short status) {
+        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        if (user != null) {
+            SharedDrive drive = dao.findById(driveId);
+            if (drive != null) {
+                if (drive.getUser().getId() == user.getId()) {
+                    for (Passenger passenger : drive.getPassengers()) {
+                        if (passenger.getId() == passengerId) {
+                            passenger.setStatus(status);
+                            dao.save(drive);
+                            return Response.ok().build();
+                        }
+                    }
+                    return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "Passenger does not exist")).build();
+                }
+                return Response.status(Response.Status.FORBIDDEN).entity(new ResponseMessage(Response.Status.FORBIDDEN.getStatusCode(), "Only drive owner can update request")).build();
+            }
+            return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "Drive does not exist")).build();
+        }
+        return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "User does not exist")).build();
+    }
+
+    @Timed
     @POST
     @UnitOfWork
     @PermitAll
@@ -82,23 +112,26 @@ public class SharedDriveResource {
         if (user != null) {
             SharedDrive drive = dao.findById(id);
             if (drive != null) {
-                boolean exists = false;
-                for (Passenger passenger : drive.getPassengers()) {
-                    if (passenger.getUser().getId() == user.getId()) {
-                        exists = true;
+                if (drive.getUser().getId() != user.getId()) {
+                    boolean exists = false;
+                    for (Passenger passenger : drive.getPassengers()) {
+                        if (passenger.getUser().getId() == user.getId()) {
+                            exists = true;
+                        }
                     }
-                }
-                if (!exists) {
-                    Passenger passenger = new Passenger(user);
-                    long passengerId = passengerDAO.save(passenger);
-                    if (passengerId != -1) {
-                        drive.addPassenger(passenger);
-                        dao.save(drive);
-                        return Response.created(null).build();
+                    if (!exists) {
+                        Passenger passenger = new Passenger(user);
+                        long passengerId = passengerDAO.save(passenger);
+                        if (passengerId != -1) {
+                            drive.addPassenger(passenger);
+                            dao.save(drive);
+                            return Response.created(null).build();
+                        }
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Some error happened")).build();
                     }
-                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Some error happened")).build();
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new ResponseMessage(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Already requested")).build();
                 }
-                return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new ResponseMessage(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Already requested")).build();
+                return Response.status(Response.Status.FORBIDDEN).entity(new ResponseMessage(Response.Status.FORBIDDEN.getStatusCode(), "Can't be passenger on your own drive")).build();
             }
             return Response.status(Response.Status.NO_CONTENT).entity(new ResponseMessage(Response.Status.NO_CONTENT.getStatusCode(), "Drive does not exist")).build();
         }
