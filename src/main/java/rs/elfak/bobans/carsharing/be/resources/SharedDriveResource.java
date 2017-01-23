@@ -106,10 +106,10 @@ public class SharedDriveResource {
     }
 
     @Timed
-    @POST
+    @DELETE
     @UnitOfWork
     @PermitAll
-    @Path("/{id}/request/cancel")
+    @Path("/{id}/request")
     public Response cancelRequest(@Context SecurityContext context, @PathParam("id") long id) {
         User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
