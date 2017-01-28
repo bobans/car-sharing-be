@@ -7,16 +7,16 @@ server:
 
 database:
   # the name of your JDBC driver
-  driverClass: org.h2.Driver
+  driverClass: org.postgresql.Driver
 
   # the JDBC URL
-  url: jdbc:h2:./db/repository
+  url: jdbc:postgresql://ec2-54-247-189-141.eu-west-1.compute.amazonaws.com:5432/d3eur2mo3lln8v?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
 
   #  the username
-  #  user: sa
+  user: nnquoatkxcxxtt
 
   # the password
-  # password: sa
+  password: 44334bb19231f4dbf9fb33e9ec2627df9f5ef1856073de42130fce50a5a90e82
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
@@ -37,7 +37,7 @@ database:
   minIdleTime: 1 minute
 
   properties:
-       hibernate.dialect: org.hibernate.dialect.H2Dialect
+       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
        hibernate.generate_statistics: true
        hibernate.show_sql: true
        hibernate.format_sql: true

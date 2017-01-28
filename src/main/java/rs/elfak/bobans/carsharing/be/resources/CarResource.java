@@ -4,7 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Car;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
-import rs.elfak.bobans.carsharing.be.models.User;
+import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.daos.CarDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
@@ -42,7 +42,7 @@ public class CarResource {
     @UnitOfWork
     @PermitAll
     public List<Car> getUserCars(@Context SecurityContext context) {
-        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
             return user.getCars();
         }
@@ -66,7 +66,7 @@ public class CarResource {
     public Response addCar(@Context SecurityContext context, @NotNull @Valid Car car) {
         long id = carDAO.save(car);
         if (id != 0) {
-            User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+            AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
             if (user != null) {
                 user.addCar(car);
                 userDAO.save(user);

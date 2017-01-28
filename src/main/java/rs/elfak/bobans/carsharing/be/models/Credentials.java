@@ -43,7 +43,7 @@ public class Credentials implements Principal {
     private String password;
 
     @OneToOne
-    private User user;
+    private AppUser user;
 
     @Override
     @JsonIgnore
@@ -70,11 +70,11 @@ public class Credentials implements Principal {
         return password;
     }
 
-    public User getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 }

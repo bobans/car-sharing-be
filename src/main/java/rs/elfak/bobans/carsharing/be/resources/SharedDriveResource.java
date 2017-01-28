@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
-import rs.elfak.bobans.carsharing.be.models.User;
+import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.daos.PassengerDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
@@ -81,7 +81,7 @@ public class SharedDriveResource {
                                   @PathParam("driveId") long driveId,
                                   @PathParam("passengerId") long passengerId,
                                   @PathParam("status") short status) {
-        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
             SharedDrive drive = dao.findById(driveId);
             if (drive != null) {
@@ -108,7 +108,7 @@ public class SharedDriveResource {
     @PermitAll
     @Path("/{id}/request")
     public Response request(@Context SecurityContext context, @PathParam("id") long id) {
-        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
             SharedDrive drive = dao.findById(id);
             if (drive != null) {
@@ -144,7 +144,7 @@ public class SharedDriveResource {
     @PermitAll
     @Path("/{id}/request")
     public Response cancelRequest(@Context SecurityContext context, @PathParam("id") long id) {
-        User user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
             SharedDrive drive = dao.findById(id);
             if (drive != null) {

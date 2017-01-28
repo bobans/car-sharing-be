@@ -3,7 +3,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
-import rs.elfak.bobans.carsharing.be.models.User;
+import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
@@ -39,7 +39,7 @@ public class UserResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public List<User> getUsers(@Context SecurityContext context) {
+    public List<AppUser> getUsers(@Context SecurityContext context) {
         return dao.findAll();
     }
 
@@ -48,7 +48,7 @@ public class UserResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public User getUserByUsername(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username) {
+    public AppUser getUserByUsername(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username) {
         return dao.findByUsername(username);
     }
 
@@ -57,7 +57,7 @@ public class UserResource {
     @GET
     @UnitOfWork
     @PermitAll
-    public User getCurrentUser(@Context SecurityContext context) {
+    public AppUser getCurrentUser(@Context SecurityContext context) {
         return dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
     }
 
@@ -66,7 +66,7 @@ public class UserResource {
     @UnitOfWork
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addUser(@Context SecurityContext context, @NotNull User user) {
+    public Response addUser(@Context SecurityContext context, @NotNull AppUser user) {
         if (((Credentials) context.getUserPrincipal()).getUser() == null) {
             if (dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername()) == null) {
                 user.setUsername(((Credentials) context.getUserPrincipal()).getUsername());

@@ -25,7 +25,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
 
     private final HibernateBundle<CarSharingConfiguration> hibernate = new HibernateBundle<CarSharingConfiguration>(
             Credentials.class,
-            User.class,
+            AppUser.class,
             Car.class,
             Make.class,
             Model.class,

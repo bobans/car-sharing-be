@@ -17,19 +17,19 @@ import java.util.List;
         {
                 @NamedQuery(
                         name = "User.findAll",
-                        query = "SELECT u FROM User u"
+                        query = "SELECT u FROM AppUser u"
                 ),
                 @NamedQuery(
                         name = "User.findOther",
-                        query = "SELECT u FROM User u WHERE u.username <> :username"
+                        query = "SELECT u FROM AppUser u WHERE u.username <> :username"
                 ),
                 @NamedQuery(
                         name = "User.findByUsername",
-                        query = "SELECT u FROM User u WHERE u.username = :username"
+                        query = "SELECT u FROM AppUser u WHERE u.username = :username"
                 )
         }
 )
-public class User {
+public class AppUser {
 
     public static final int TYPE_PASSENGER = 1;
     public static final int TYPE_DRIVER = 2;
@@ -67,7 +67,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 
-    public User() {
+    public AppUser() {
     }
 
     public long getId() {

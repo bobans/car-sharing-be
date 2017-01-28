@@ -36,7 +36,7 @@ public class SharedDrive {
 
     @NotNull
     @ManyToOne
-    private User user;
+    private AppUser user;
 
     @NotNull
     @ManyToOne
@@ -77,11 +77,11 @@ public class SharedDrive {
         return id;
     }
 
-    public User getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 

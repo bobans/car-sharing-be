@@ -33,14 +33,14 @@ public class Passenger {
 
     @NotNull
     @ManyToOne
-    private User user;
+    private AppUser user;
 
     private short status;
 
     public Passenger() {
     }
 
-    public Passenger(User user) {
+    public Passenger(AppUser user) {
         this.user = user;
         this.status = STATUS_REQUESTED;
     }
@@ -61,11 +61,11 @@ public class Passenger {
         this.status = status;
     }
 
-    public User getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 
