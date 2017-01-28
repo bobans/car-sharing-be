@@ -8,6 +8,13 @@
     <artifactId>car-sharing-be</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>Atlassian 3rd-Party</id>
+            <url>https://maven.atlassian.com/3rdparty/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <dropwizard.version>1.0.0</dropwizard.version>
     </properties>
@@ -30,7 +37,7 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc4</version>
+            <version>9.4.1208-jdbc42-atlassian-hosted</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
