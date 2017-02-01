@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.Api;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Token;
 import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
@@ -21,6 +22,7 @@ import java.util.Base64;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Path("/register")
+@Api(value = "/register", description = "User registration")
 @Produces(MediaType.APPLICATION_JSON)
 public class RegisterResource {
 

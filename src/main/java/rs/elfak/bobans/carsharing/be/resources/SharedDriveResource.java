@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.Api;
 import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Passenger;
@@ -28,6 +29,7 @@ import java.util.List;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Path("/drives")
+@Api(value = "/drives", description = "Shared drives management")
 @Produces(MediaType.APPLICATION_JSON)
 public class SharedDriveResource {
 

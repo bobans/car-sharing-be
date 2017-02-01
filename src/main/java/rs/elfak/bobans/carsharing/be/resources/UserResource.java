@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.Api;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
@@ -24,6 +25,7 @@ import java.util.List;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Path("/users")
+@Api(value = "/users", description = "Users management")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
 

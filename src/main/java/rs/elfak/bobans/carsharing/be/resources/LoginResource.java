@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
+import io.swagger.annotations.Api;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Token;
 
@@ -21,6 +22,7 @@ import java.util.Base64;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Path("/login")
+@Api(value = "/login", description = "User authentication")
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
 

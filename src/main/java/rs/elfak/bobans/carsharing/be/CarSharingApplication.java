@@ -8,6 +8,8 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
 import rs.elfak.bobans.carsharing.be.models.*;
@@ -47,8 +49,15 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
 
     @Override
     public void run(CarSharingConfiguration carSharingConfiguration, Environment environment) throws Exception {
+        environment.jersey().register(new ApiListingResource());
         registerExceptionMappers(environment);
         registerHibernateResources(environment);
+
+        BeanConfig config = new BeanConfig();
+        config.setTitle("Car Sharing");
+        config.setVersion("1.0");
+        config.setResourcePackage("rs.elfak.bobans.carsharing.be.resources");
+        config.setScan(true);
     }
 
     @Override
