@@ -3,6 +3,9 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Token;
 import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
@@ -34,6 +37,17 @@ public class RegisterResource {
 
     @Timed
     @POST
+    @ApiOperation(
+            value = "Register",
+            notes = "Registers new user to the system"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 201, message = "Created", response = Token.class),
+                    @ApiResponse(code = 400, message = "Bad Request", response = ResponseMessage.class),
+                    @ApiResponse(code = 409, message = "Conflict", response = ResponseMessage.class)
+            }
+    )
     @UnitOfWork
     public Response register(@NotNull Credentials credentials) {
         if (dao.findByUsername(credentials.getUsername()) == null) {

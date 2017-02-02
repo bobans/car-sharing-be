@@ -8,6 +8,8 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import org.hibernate.SessionFactory;
@@ -43,21 +45,21 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         }
     };
 
+    private final SwaggerBundle<CarSharingConfiguration> swagger = new SwaggerBundle<CarSharingConfiguration>() {
+        @Override
+        protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(CarSharingConfiguration carSharingConfiguration) {
+            return carSharingConfiguration.getSwagger();
+        }
+    };
+
     public static void main(final String[] args) throws Exception {
         new CarSharingApplication().run(args);
     }
 
     @Override
     public void run(CarSharingConfiguration carSharingConfiguration, Environment environment) throws Exception {
-        environment.jersey().register(new ApiListingResource());
         registerExceptionMappers(environment);
         registerHibernateResources(environment);
-
-        BeanConfig config = new BeanConfig();
-        config.setTitle("Car Sharing");
-        config.setVersion("1.0");
-        config.setResourcePackage("rs.elfak.bobans.carsharing.be.resources");
-        config.setScan(true);
     }
 
     @Override
@@ -68,6 +70,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
     @Override
     public void initialize(Bootstrap<CarSharingConfiguration> bootstrap) {
         bootstrap.addBundle(hibernate);
+        bootstrap.addBundle(swagger);
         super.initialize(bootstrap);
     }
 

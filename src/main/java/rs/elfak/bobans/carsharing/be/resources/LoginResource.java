@@ -2,7 +2,7 @@ package rs.elfak.bobans.carsharing.be.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.Token;
 
@@ -30,6 +30,15 @@ public class LoginResource {
     @POST
     @UnitOfWork
     @PermitAll
+    @ApiOperation(
+            value = "Login",
+            notes = "Returns authorization token for the user if credentials are correct",
+            response = Token.class,
+            authorizations = { @Authorization(value = "Basic") }
+    )
+    @ApiResponses(
+            value = @ApiResponse(code = 401, message = "Unauthorized")
+    )
     public Response login(@Context SecurityContext context) {
         Credentials credentials = (Credentials) context.getUserPrincipal();
         String token = credentials.getName() + ":" + credentials.getPassword();
