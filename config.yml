@@ -44,4 +44,9 @@ database:
        hibernate.hbm2ddl.auto: update
 
 swagger:
+  title: Car Sharing
+  description: Car Sharing application api
+  version: 1.0
+  contact: Boban Stajic
+  contactEmail: bobanstajic@gmail.com
   resourcePackage: rs.elfak.bobans.carsharing.be.resources
