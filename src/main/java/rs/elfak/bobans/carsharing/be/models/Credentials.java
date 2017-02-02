@@ -1,6 +1,7 @@
 package rs.elfak.bobans.carsharing.be.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -30,6 +31,7 @@ public class Credentials implements Principal {
 
     @Id
     @GeneratedValue
+    @ApiModelProperty(hidden = true)
     private long id;
 
     @NotNull
@@ -43,6 +45,7 @@ public class Credentials implements Principal {
     private String password;
 
     @OneToOne
+    @ApiModelProperty(hidden = true)
     private AppUser user;
 
     @Override
