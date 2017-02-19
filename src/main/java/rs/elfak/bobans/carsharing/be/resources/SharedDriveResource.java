@@ -11,6 +11,7 @@ import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.daos.PassengerDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
+import rs.elfak.bobans.carsharing.be.utils.FirebaseManager;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
 import javax.annotation.security.PermitAll;
@@ -127,6 +128,7 @@ public class SharedDriveResource {
                         if (passengerId != -1) {
                             drive.addPassenger(passenger);
                             dao.save(drive);
+                            FirebaseManager.notifyUserDriveRequested(drive, passenger);
                             return Response.created(null).build();
                         }
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ResponseMessage(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Some error happened")).build();

@@ -67,6 +67,11 @@ public class AppUser {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 
+    @ElementCollection
+    @CollectionTable(name = "UserPushIds", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "firebase_id")
+    private List<String> firebaseIds;
+
     public AppUser() {
     }
 
@@ -120,6 +125,24 @@ public class AppUser {
 
     public void addCar(Car car) {
         cars.add(car);
+    }
+
+    public List<String> getFirebaseIds() {
+        return firebaseIds;
+    }
+
+    public void addFirebaseId(String firebaseId) {
+        if (!firebaseIds.contains(firebaseId)) {
+            firebaseIds.add(firebaseId);
+        }
+    }
+
+    public void removeFirebaseId(String firebaseId) {
+        firebaseIds.remove(firebaseId);
+    }
+
+    public void setFirebaseIds(List<String> firebaseIds) {
+        this.firebaseIds = firebaseIds;
     }
 
 }

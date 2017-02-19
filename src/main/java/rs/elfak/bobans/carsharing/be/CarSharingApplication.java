@@ -104,5 +104,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new CarResource(carDAO, userDAO));
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
         environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO));
+        environment.jersey().register(new FCMResource(userDAO));
     }
 }
