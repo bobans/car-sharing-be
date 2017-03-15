@@ -8,6 +8,7 @@ import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseMessage;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseMessageData;
+import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 import rs.elfak.bobans.carsharing.be.utils.serialization.DateTimeSerializer;
 
 import javax.ws.rs.client.Client;
@@ -52,8 +53,8 @@ public class FirebaseManager {
     }
 
     public static void notifyUserDriveRequested(SharedDrive drive, Passenger passenger) {
-        for (String firebaseId : drive.getUser().getFirebaseIds()) {
-            sendPushNotification(firebaseId, new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUESTED, passenger));
+        for (FirebaseToken token : drive.getUser().getFirebaseTokens()) {
+            sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUESTED, passenger));
         }
     }
 

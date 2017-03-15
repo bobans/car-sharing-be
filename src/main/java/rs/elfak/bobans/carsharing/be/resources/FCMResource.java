@@ -5,16 +5,14 @@ import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
+import rs.elfak.bobans.carsharing.be.models.daos.FirebaseTokenDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -31,9 +29,11 @@ import javax.ws.rs.core.SecurityContext;
 public class FCMResource {
 
     private final UserDAO userDAO;
+    private final FirebaseTokenDAO firebaseTokenDAO;
 
-    public FCMResource(UserDAO userDAO) {
+    public FCMResource(UserDAO userDAO, FirebaseTokenDAO firebaseTokenDAO) {
         this.userDAO = userDAO;
+        this.firebaseTokenDAO = firebaseTokenDAO;
     }
 
     @Timed
@@ -44,7 +44,11 @@ public class FCMResource {
     public Response register(@Context SecurityContext context, @NotNull FirebaseToken token) {
         AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
-            user.addFirebaseId(token.getToken());
+            String id = firebaseTokenDAO.save(token);
+            if (id == null || id.isEmpty()) {
+                return Response.status(Response.Status.NOT_ACCEPTABLE).entity(new ResponseMessage(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Can't save token")).build();
+            }
+            user.addFirebaseToken(token);
             userDAO.save(user);
             return Response.ok().build();
         }
@@ -52,15 +56,18 @@ public class FCMResource {
     }
 
     @Timed
-    @POST
+    @DELETE
     @UnitOfWork
     @PermitAll
-    @Path("/unregister")
-    public Response unregister(@Context SecurityContext context, @NotNull FirebaseToken token) {
+    @Path("/unregister/{device_id}")
+    public Response unregister(@Context SecurityContext context, @PathParam("device_id") String deviceId) {
         AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
-            user.removeFirebaseId(token.getToken());
-            userDAO.save(user);
+            FirebaseToken token = firebaseTokenDAO.findById(deviceId);
+            if (token != null) {
+                user.removeFirebaseToken(token);
+                userDAO.save(user);
+            }
             return Response.ok().build();
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not exist")).build();

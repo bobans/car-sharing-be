@@ -10,12 +10,11 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import io.swagger.jaxrs.config.BeanConfig;
-import io.swagger.jaxrs.listing.ApiListingResource;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
 import rs.elfak.bobans.carsharing.be.models.*;
 import rs.elfak.bobans.carsharing.be.models.daos.*;
+import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 import rs.elfak.bobans.carsharing.be.resources.*;
 import rs.elfak.bobans.carsharing.be.utils.CarSharingUnauthorizedHandler;
 import rs.elfak.bobans.carsharing.be.utils.SimpleAuthenticator;
@@ -37,7 +36,8 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
             DrivePreferences.class,
             DriveTime.class,
             DrivePrice.class,
-            Passenger.class
+            Passenger.class,
+            FirebaseToken.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {
@@ -87,6 +87,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         ModelDAO modelDAO = new ModelDAO(sessionFactory);
         SharedDriveDAO driveDAO = new SharedDriveDAO(sessionFactory);
         PassengerDAO passengerDAO = new PassengerDAO(sessionFactory);
+        FirebaseTokenDAO firebaseTokenDAO = new FirebaseTokenDAO(sessionFactory);
 
         SimpleAuthenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernate)
                 .create(SimpleAuthenticator.class, CredentialsDAO.class, credentialsDAO);
@@ -104,6 +105,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new CarResource(carDAO, userDAO));
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
         environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO));
-        environment.jersey().register(new FCMResource(userDAO));
+        environment.jersey().register(new FCMResource(userDAO, firebaseTokenDAO));
     }
 }

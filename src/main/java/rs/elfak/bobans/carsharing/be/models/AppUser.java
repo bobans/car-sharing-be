@@ -2,6 +2,7 @@ package rs.elfak.bobans.carsharing.be.models;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
+import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -67,10 +68,8 @@ public class AppUser {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 
-    @ElementCollection
-    @CollectionTable(name = "UserPushIds", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "firebase_id")
-    private List<String> firebaseIds;
+    @OneToMany(cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    private List<FirebaseToken> firebaseTokens;
 
     public AppUser() {
     }
@@ -127,22 +126,22 @@ public class AppUser {
         cars.add(car);
     }
 
-    public List<String> getFirebaseIds() {
-        return firebaseIds;
+    public List<FirebaseToken> getFirebaseTokens() {
+        return firebaseTokens;
     }
 
-    public void addFirebaseId(String firebaseId) {
-        if (!firebaseIds.contains(firebaseId)) {
-            firebaseIds.add(firebaseId);
+    public void addFirebaseToken(FirebaseToken firebaseToken) {
+        if (!firebaseTokens.contains(firebaseToken)) {
+            firebaseTokens.add(firebaseToken);
         }
     }
 
-    public void removeFirebaseId(String firebaseId) {
-        firebaseIds.remove(firebaseId);
+    public void removeFirebaseToken(FirebaseToken firebaseToken) {
+        firebaseTokens.remove(firebaseToken);
     }
 
-    public void setFirebaseIds(List<String> firebaseIds) {
-        this.firebaseIds = firebaseIds;
+    public void setFirebaseTokens(List<FirebaseToken> firebaseTokens) {
+        this.firebaseTokens = firebaseTokens;
     }
 
 }
