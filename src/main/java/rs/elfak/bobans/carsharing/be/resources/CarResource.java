@@ -61,7 +61,7 @@ public class CarResource {
     }
 
     @Timed
-    @POST
+    @PUT
     @UnitOfWork
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)

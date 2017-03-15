@@ -37,7 +37,7 @@ public class FCMResource {
     }
 
     @Timed
-    @POST
+    @PUT
     @UnitOfWork
     @PermitAll
     @Path("/register")
