@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
+import rs.elfak.bobans.carsharing.be.models.SharedDriveRequest;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseMessage;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseMessageData;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
@@ -54,7 +55,7 @@ public class FirebaseManager {
 
     public static void notifyUserDriveRequested(SharedDrive drive, Passenger passenger) {
         for (FirebaseToken token : drive.getUser().getFirebaseTokens()) {
-            sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUESTED, passenger));
+            sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUESTED, new SharedDriveRequest(drive, passenger)));
         }
     }
 
