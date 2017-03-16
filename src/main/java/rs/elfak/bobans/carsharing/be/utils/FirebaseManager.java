@@ -59,4 +59,10 @@ public class FirebaseManager {
         }
     }
 
+    public static void notifyUserDriveRequestCanceled(SharedDrive drive, Passenger passenger) {
+        for (FirebaseToken token : drive.getUser().getFirebaseTokens()) {
+            sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUEST_CANCELED, new SharedDriveRequest(drive, passenger)));
+        }
+    }
+
 }

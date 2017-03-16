@@ -154,15 +154,17 @@ public class SharedDriveResource {
             if (drive != null) {
                 boolean exists = false;
                 List<Passenger> passengers = drive.getPassengers();
+                Passenger removed = null;
                 for (int i=passengers.size()-1; i>=0; i--) {
                     if (passengers.get(i).getUser().getId() == user.getId()) {
                         exists = true;
-                        passengers.remove(i);
+                        removed = passengers.remove(i);
                     }
                 }
                 if (exists) {
                     drive.setPassengers(passengers);
                     dao.save(drive);
+                    FirebaseManager.notifyUserDriveRequestCanceled(drive, removed);
                 }
                 return Response.ok().build();
             }

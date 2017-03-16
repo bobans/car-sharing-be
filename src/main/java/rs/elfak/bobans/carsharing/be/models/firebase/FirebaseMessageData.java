@@ -8,7 +8,8 @@ package rs.elfak.bobans.carsharing.be.models.firebase;
 public class FirebaseMessageData<T> {
 
     public enum MessageType {
-        DRIVE_REQUESTED
+        DRIVE_REQUESTED,
+        DRIVE_REQUEST_CANCELED
     }
 
     private MessageType type;
