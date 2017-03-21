@@ -112,6 +112,10 @@ public class UserResource {
 
         String extension = contentDispositionHeader.getFileName().substring(contentDispositionHeader.getFileName().lastIndexOf("."));
         java.nio.file.Path outputPath = FileSystems.getDefault().getPath("user-images", "photo-" + user.getUsername() + "-" + System.currentTimeMillis() + extension);
+        File dir = new File(FileSystems.getDefault().getPath("user-images").toAbsolutePath().toString());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         try {
             Files.copy(fileInputStream, outputPath);
             File file = new File(outputPath.toAbsolutePath().toString());
