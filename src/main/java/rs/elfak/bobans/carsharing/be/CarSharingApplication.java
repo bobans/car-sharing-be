@@ -10,6 +10,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.exceptionMappers.RelatedEntityMissingExceptionMapper;
 import rs.elfak.bobans.carsharing.be.models.*;
@@ -106,5 +107,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
         environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO));
         environment.jersey().register(new FCMResource(userDAO, firebaseTokenDAO));
+        environment.jersey().register(MultiPartFeature.class);
     }
 }

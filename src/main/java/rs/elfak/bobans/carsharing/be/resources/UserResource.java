@@ -1,8 +1,12 @@
 package rs.elfak.bobans.carsharing.be.resources;
 
+import com.cloudinary.utils.ObjectUtils;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import rs.elfak.bobans.carsharing.be.CloudinaryManager;
 import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.Credentials;
 import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
@@ -17,7 +21,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Boban Stajic.
@@ -86,6 +96,35 @@ public class UserResource {
             }
         } else {
             return Response.status(Response.Status.CONFLICT).entity(new ResponseMessage(Response.Status.CONFLICT.getStatusCode(), "User already created")).build();
+        }
+    }
+
+    @Timed
+    @Path("/upload-photo")
+    @POST
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadUserImage(@Context SecurityContext context,
+                                    @FormDataParam("file") final InputStream fileInputStream,
+                                    @FormDataParam("file") final FormDataContentDisposition contentDispositionHeader) {
+        AppUser user = ((Credentials) context.getUserPrincipal()).getUser();
+
+        String extension = contentDispositionHeader.getFileName().substring(contentDispositionHeader.getFileName().lastIndexOf("."));
+        java.nio.file.Path outputPath = FileSystems.getDefault().getPath("user-images", "photo-" + user.getUsername() + "-" + System.currentTimeMillis() + extension);
+        try {
+            Files.copy(fileInputStream, outputPath);
+            File file = new File(outputPath.toAbsolutePath().toString());
+            Map uploadResult = CloudinaryManager.getInstance().getCloudinary().uploader().upload(file, ObjectUtils.emptyMap());
+            String url = (String) uploadResult.get("url");
+            user.setPhotoUrl(url);
+            dao.save(user);
+            file.delete();
+            return Response.ok(url).build();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
     }
 
