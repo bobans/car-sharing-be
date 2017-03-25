@@ -100,6 +100,25 @@ public class UserResource {
     }
 
     @Timed
+    @PUT
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateUser(@Context SecurityContext context, @NotNull AppUser user) {
+        AppUser currentUser = ((Credentials) context.getUserPrincipal()).getUser();
+        if (currentUser != null) {
+            user.setId(currentUser.getId());
+            user.setUsername(currentUser.getUsername());
+            dao.save(user);
+            ((Credentials) context.getUserPrincipal()).setUser(user);
+            credentialsDAO.save((Credentials) context.getUserPrincipal());
+            return Response.ok(user).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
+        }
+    }
+
+    @Timed
     @Path("/upload-photo")
     @POST
     @UnitOfWork
