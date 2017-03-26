@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -143,7 +144,9 @@ public class UserResource {
             user.setPhotoUrl(url);
             dao.save(user);
             file.delete();
-            return Response.ok(url).build();
+            Map<String, String> response = new HashMap<>();
+            response.put("url", url);
+            return Response.ok(response).build();
 
         } catch (IOException e) {
             e.printStackTrace();
