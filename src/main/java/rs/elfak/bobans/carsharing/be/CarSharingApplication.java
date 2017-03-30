@@ -38,7 +38,8 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
             DriveTime.class,
             DrivePrice.class,
             Passenger.class,
-            FirebaseToken.class
+            FirebaseToken.class,
+            UserReview.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {
@@ -89,6 +90,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         SharedDriveDAO driveDAO = new SharedDriveDAO(sessionFactory);
         PassengerDAO passengerDAO = new PassengerDAO(sessionFactory);
         FirebaseTokenDAO firebaseTokenDAO = new FirebaseTokenDAO(sessionFactory);
+        UserReviewDAO userReviewDAO = new UserReviewDAO(sessionFactory);
 
         SimpleAuthenticator authenticator = new UnitOfWorkAwareProxyFactory(hibernate)
                 .create(SimpleAuthenticator.class, CredentialsDAO.class, credentialsDAO);
@@ -108,5 +110,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO));
         environment.jersey().register(new FCMResource(userDAO, firebaseTokenDAO));
         environment.jersey().register(MultiPartFeature.class);
+        environment.jersey().register(new UserReviewResource(userDAO, userReviewDAO, driveDAO));
     }
 }

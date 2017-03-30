@@ -1,6 +1,7 @@
 package rs.elfak.bobans.carsharing.be.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
@@ -15,28 +16,25 @@ import java.util.List;
  * @author Boban Stajic<bobanstajic@gmail.com>
  */
 @Entity
-@NamedQueries(
-        {
-                @NamedQuery(
-                        name = "User.findAll",
-                        query = "SELECT u FROM AppUser u"
-                ),
-                @NamedQuery(
-                        name = "User.findOther",
-                        query = "SELECT u FROM AppUser u WHERE u.username <> :username"
-                ),
-                @NamedQuery(
-                        name = "User.findByUsername",
-                        query = "SELECT u FROM AppUser u WHERE u.username = :username"
-                )
-        }
-)
+@NamedQueries({
+        @NamedQuery(
+                name = "User.findAll",
+                query = "SELECT u FROM AppUser u"
+        ),
+        @NamedQuery(
+                name = "User.findOther",
+                query = "SELECT u FROM AppUser u WHERE u.username <> :username"
+        ),
+        @NamedQuery(
+                name = "User.findByUsername",
+                query = "SELECT u FROM AppUser u WHERE u.username = :username"
+        )
+})
 public class AppUser {
 
     public static final int TYPE_PASSENGER = 1;
     public static final int TYPE_DRIVER = 2;
 
-    @JsonIgnore
     @Id
     @GeneratedValue
     private long id;
@@ -71,8 +69,11 @@ public class AppUser {
     private List<Car> cars;
 
     @JsonIgnore
-    @OneToMany(cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FirebaseToken> firebaseTokens;
+
+    @Formula("(SELECT AVG(ur.score) FROM UserReview ur WHERE ur.user_id = id)")
+    private Double averageScore;
 
     public AppUser() {
     }
@@ -149,6 +150,14 @@ public class AppUser {
 
     public void setFirebaseTokens(List<FirebaseToken> firebaseTokens) {
         this.firebaseTokens = firebaseTokens;
+    }
+
+    public double getAverageScore() {
+        return averageScore != null ? averageScore : 0;
+    }
+
+    public void setAverageScore(double averageScore) {
+        this.averageScore = averageScore;
     }
 
 }
