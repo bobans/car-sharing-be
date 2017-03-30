@@ -1,5 +1,6 @@
 package rs.elfak.bobans.carsharing.be.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
@@ -35,6 +36,7 @@ public class AppUser {
     public static final int TYPE_PASSENGER = 1;
     public static final int TYPE_DRIVER = 2;
 
+    @JsonIgnore
     @Id
     @GeneratedValue
     private long id;
@@ -68,6 +70,7 @@ public class AppUser {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Car> cars;
 
+    @JsonIgnore
     @OneToMany(cascade =  CascadeType.REMOVE, orphanRemoval = true)
     private List<FirebaseToken> firebaseTokens;
 
