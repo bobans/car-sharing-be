@@ -44,8 +44,8 @@ database:
        hibernate.hbm2ddl.auto: update
 
 swagger:
-  title: Car Sharing
-  description: Car Sharing application api
+  title: Drive Together
+  description: Car sharing application api
   version: 1.0
   contact: Boban Stajic
   contactEmail: bobanstajic@gmail.com
