@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +115,21 @@ public class UserResource {
             ((Credentials) context.getUserPrincipal()).setUser(user);
             credentialsDAO.save((Credentials) context.getUserPrincipal());
             return Response.ok(user).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
+        }
+    }
+
+    @Timed
+    @DELETE
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteUser(@Context SecurityContext context) {
+        Principal userPrincipal = context.getUserPrincipal();
+        if (userPrincipal instanceof Credentials) {
+            dao.delete((Credentials) userPrincipal);
+            return Response.ok().build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
         }

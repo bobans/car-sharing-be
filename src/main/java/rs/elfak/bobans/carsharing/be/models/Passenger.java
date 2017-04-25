@@ -32,7 +32,7 @@ public class Passenger {
     private long id;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private AppUser user;
 
     private short status;

@@ -3,6 +3,7 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.models.AppUser;
+import rs.elfak.bobans.carsharing.be.models.Credentials;
 
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class UserDAO extends AbstractDAO<AppUser> implements DAO<AppUser> {
 
     public AppUser findByUsername(String username) {
         return uniqueResult(namedQuery("User.findByUsername").setParameter("username", username));
+    }
+
+    public void delete(Credentials user) {
+        currentSession().delete(user);
     }
 
 }

@@ -38,14 +38,14 @@ public class UserReview {
     private int userType;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private AppUser user;
 
     @NotNull
     private int reviewerType;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private AppUser reviewer;
 
     @NotNull

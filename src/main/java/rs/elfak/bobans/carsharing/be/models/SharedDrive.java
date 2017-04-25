@@ -35,7 +35,7 @@ public class SharedDrive {
     private long id;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private AppUser user;
 
     @NotNull
