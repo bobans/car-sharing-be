@@ -1,6 +1,6 @@
 package rs.elfak.bobans.carsharing.be.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -39,6 +39,7 @@ public class UserReview {
 
     @NotNull
     @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id")
     private AppUser user;
 
     @NotNull
@@ -55,8 +56,9 @@ public class UserReview {
     @NotEmpty
     private String comment;
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "drive_id")
+    @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     private SharedDrive sharedDrive;
 
     public UserReview() {

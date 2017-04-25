@@ -65,7 +65,7 @@ public class AppUser {
     @NotNull
     private int userType;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Car> cars;
 
     @JsonIgnore

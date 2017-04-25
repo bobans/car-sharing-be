@@ -41,7 +41,7 @@ public class UserDAO extends AbstractDAO<AppUser> implements DAO<AppUser> {
         return uniqueResult(namedQuery("User.findByUsername").setParameter("username", username));
     }
 
-    public void delete(Credentials user) {
+    public void delete(AppUser user) {
         currentSession().delete(user);
     }
 
