@@ -1,6 +1,5 @@
 package rs.elfak.bobans.carsharing.be.models;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -25,6 +24,10 @@ import javax.validation.constraints.NotNull;
                 @NamedQuery(
                         name = "UserReview.find",
                         query = "SELECT ur FROM UserReview ur WHERE ur.user.username = :username AND ur.reviewer.username=:reviewer AND ur.sharedDrive.id=:sharedDrive"
+                ),
+                @NamedQuery(
+                        name = "UserReview.findForDrive",
+                        query = "SELECT ur FROM UserReview ur WHERE ur.sharedDrive.id = :driveId"
                 )
         }
 )
@@ -38,7 +41,7 @@ public class UserReview {
     private int userType;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
 
@@ -46,7 +49,7 @@ public class UserReview {
     private int reviewerType;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     private AppUser reviewer;
 
     @NotNull
@@ -56,9 +59,8 @@ public class UserReview {
     @NotEmpty
     private String comment;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "drive_id")
-    @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     private SharedDrive sharedDrive;
 
     public UserReview() {

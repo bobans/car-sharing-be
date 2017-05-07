@@ -4,13 +4,11 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
 import org.joda.time.DateTime;
-import rs.elfak.bobans.carsharing.be.models.AppUser;
-import rs.elfak.bobans.carsharing.be.models.Credentials;
-import rs.elfak.bobans.carsharing.be.models.Passenger;
-import rs.elfak.bobans.carsharing.be.models.SharedDrive;
+import rs.elfak.bobans.carsharing.be.models.*;
 import rs.elfak.bobans.carsharing.be.models.daos.PassengerDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
+import rs.elfak.bobans.carsharing.be.models.daos.UserReviewDAO;
 import rs.elfak.bobans.carsharing.be.utils.FirebaseManager;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
@@ -37,11 +35,13 @@ public class SharedDriveResource {
     private final SharedDriveDAO dao;
     private final UserDAO userDAO;
     private final PassengerDAO passengerDAO;
+    private final UserReviewDAO userReviewDAO;
 
-    public SharedDriveResource(SharedDriveDAO dao, UserDAO userDAO, PassengerDAO passengerDAO) {
+    public SharedDriveResource(SharedDriveDAO dao, UserDAO userDAO, PassengerDAO passengerDAO, UserReviewDAO userReviewDAO) {
         this.dao = dao;
         this.userDAO = userDAO;
         this.passengerDAO = passengerDAO;
+        this.userReviewDAO = userReviewDAO;
     }
 
     @Timed
@@ -69,6 +69,11 @@ public class SharedDriveResource {
     public Response deleteDrive(@Context SecurityContext context, @PathParam("id") long id) {
         SharedDrive drive = dao.findById(id);
         if (drive != null) {
+            List<UserReview> reviews = userReviewDAO.findForDrive(drive.getId());
+            for (UserReview review : reviews) {
+                review.setSharedDrive(null);
+                userReviewDAO.save(review);
+            }
             dao.delete(drive);
             return Response.ok().build();
         }

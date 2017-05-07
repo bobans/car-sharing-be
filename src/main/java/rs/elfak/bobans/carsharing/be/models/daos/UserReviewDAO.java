@@ -43,4 +43,8 @@ public class UserReviewDAO extends AbstractDAO<UserReview> implements DAO<UserRe
         return persist(obj).getId();
     }
 
+    public List<UserReview> findForDrive(long driveId) {
+        return list(namedQuery("UserReview.findForDrive").setParameter("driveId", driveId));
+    }
+
 }

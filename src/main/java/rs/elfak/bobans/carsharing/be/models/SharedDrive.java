@@ -35,12 +35,12 @@ public class SharedDrive {
     private long id;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
 
@@ -89,6 +89,10 @@ public class SharedDrive {
 
     public Car getCar() {
         return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     public String getDeparture() {

@@ -3,7 +3,6 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.utils.Constants;
 
