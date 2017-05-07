@@ -27,13 +27,21 @@ public class PassengerDAO extends AbstractDAO<Passenger> implements DAO<Passenge
         return get(id);
     }
 
-    public Passenger findByUserIAndDriveId(long userId) {
-        return uniqueResult(namedQuery("Passenger.findByUser").setParameter("userId", userId));
+    public List<Passenger> findByUserId(long userId) {
+        return list(namedQuery("Passenger.findByUser").setParameter("userId", userId));
+    }
+
+    public List<Passenger> findByUsername(String username) {
+        return list(namedQuery("Passenger.findByUsername").setParameter("username", username));
     }
 
     @Override
     public long save(Passenger obj) {
         return persist(obj).getId();
+    }
+
+    public void delete(Passenger passenger) {
+        currentSession().delete(passenger);
     }
 
 }

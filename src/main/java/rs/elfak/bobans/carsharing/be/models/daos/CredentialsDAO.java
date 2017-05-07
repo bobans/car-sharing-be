@@ -36,4 +36,8 @@ public class CredentialsDAO extends AbstractDAO<Credentials> implements DAO<Cred
         return uniqueResult(namedQuery("Credentials.findByUsername").setParameter("username", username));
     }
 
+    public void delete(Credentials credentials) {
+        currentSession().delete(credentials);
+    }
+
 }

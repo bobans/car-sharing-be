@@ -104,7 +104,7 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
                     .buildAuthFilter()));
         environment.jersey().register(new LoginResource());
         environment.jersey().register(new RegisterResource(credentialsDAO));
-        environment.jersey().register(new UserResource(userDAO, credentialsDAO));
+        environment.jersey().register(new UserResource(userDAO, credentialsDAO, userReviewDAO, passengerDAO, driveDAO));
         environment.jersey().register(new CarResource(carDAO, userDAO));
         environment.jersey().register(new MakeModelResource(makeDAO, modelDAO));
         environment.jersey().register(new SharedDriveResource(driveDAO, userDAO, passengerDAO, userReviewDAO));

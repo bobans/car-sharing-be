@@ -34,12 +34,10 @@ public class SharedDrive {
     @GeneratedValue
     private long id;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;

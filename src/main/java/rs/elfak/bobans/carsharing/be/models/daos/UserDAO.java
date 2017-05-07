@@ -3,7 +3,6 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 import rs.elfak.bobans.carsharing.be.models.AppUser;
-import rs.elfak.bobans.carsharing.be.models.Credentials;
 
 import java.util.List;
 

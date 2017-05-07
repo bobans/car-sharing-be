@@ -26,6 +26,10 @@ public class UserReviewDAO extends AbstractDAO<UserReview> implements DAO<UserRe
         return list(namedQuery("UserReview.findForUser").setParameter("username", username));
     }
 
+    public List<UserReview> findForReviewer(String username) {
+        return list(namedQuery("UserReview.findForReviewer").setParameter("username", username));
+    }
+
     public UserReview find(String username, String reviewer, long sharedDriveId) {
         return uniqueResult(namedQuery("UserReview.find")
                 .setParameter("username", username)

@@ -22,6 +22,10 @@ import javax.validation.constraints.NotNull;
                         query = "SELECT ur FROM UserReview ur WHERE ur.user.username = :username"
                 ),
                 @NamedQuery(
+                        name = "UserReview.findForReviewer",
+                        query = "SELECT ur FROM UserReview ur WHERE ur.reviewer.username = :username"
+                ),
+                @NamedQuery(
                         name = "UserReview.find",
                         query = "SELECT ur FROM UserReview ur WHERE ur.user.username = :username AND ur.reviewer.username=:reviewer AND ur.sharedDrive.id=:sharedDrive"
                 ),
@@ -40,7 +44,6 @@ public class UserReview {
     @NotNull
     private int userType;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
@@ -48,7 +51,6 @@ public class UserReview {
     @NotNull
     private int reviewerType;
 
-    @NotNull
     @ManyToOne
     private AppUser reviewer;
 

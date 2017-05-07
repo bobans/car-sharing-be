@@ -1,7 +1,6 @@
 package rs.elfak.bobans.carsharing.be.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by Boban Stajic.
@@ -18,6 +17,10 @@ import javax.validation.constraints.NotNull;
                 @NamedQuery(
                         name = "Passenger.findByUser",
                         query = "SELECT p FROM Passenger p WHERE p.user.id = :userId"
+                ),
+                @NamedQuery(
+                        name = "Passenger.findByUsername",
+                        query = "SELECT p FROM Passenger p WHERE p.user.username = :username"
                 )
         }
 )
@@ -31,7 +34,6 @@ public class Passenger {
     @GeneratedValue
     private long id;
 
-    @NotNull
     @ManyToOne
     private AppUser user;
 

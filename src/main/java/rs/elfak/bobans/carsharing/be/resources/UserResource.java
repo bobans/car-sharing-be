@@ -7,10 +7,8 @@ import io.swagger.annotations.Api;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import rs.elfak.bobans.carsharing.be.CloudinaryManager;
-import rs.elfak.bobans.carsharing.be.models.AppUser;
-import rs.elfak.bobans.carsharing.be.models.Credentials;
-import rs.elfak.bobans.carsharing.be.models.daos.CredentialsDAO;
-import rs.elfak.bobans.carsharing.be.models.daos.UserDAO;
+import rs.elfak.bobans.carsharing.be.models.*;
+import rs.elfak.bobans.carsharing.be.models.daos.*;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
 import javax.annotation.security.PermitAll;
@@ -42,10 +40,16 @@ public class UserResource {
 
     private final UserDAO dao;
     private final CredentialsDAO credentialsDAO;
+    private final UserReviewDAO userReviewDAO;
+    private final PassengerDAO passengerDAO;
+    private final SharedDriveDAO sharedDriveDAO;
 
-    public UserResource(UserDAO dao, CredentialsDAO credentialsDAO) {
+    public UserResource(UserDAO dao, CredentialsDAO credentialsDAO, UserReviewDAO userReviewDAO, PassengerDAO passengerDAO, SharedDriveDAO sharedDriveDAO) {
         this.dao = dao;
         this.credentialsDAO = credentialsDAO;
+        this.userReviewDAO = userReviewDAO;
+        this.passengerDAO = passengerDAO;
+        this.sharedDriveDAO = sharedDriveDAO;
     }
 
     @Timed
@@ -125,8 +129,34 @@ public class UserResource {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteUser(@Context SecurityContext context) {
-        AppUser currentUser = dao.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
+        Credentials credentials = (Credentials) context.getUserPrincipal();
+        AppUser currentUser = dao.findByUsername(credentials.getUsername());
         if (currentUser != null) {
+            List<UserReview> reviews = userReviewDAO.findForUser(currentUser.getUsername());
+            for (UserReview review : reviews) {
+                review.setUser(null);
+                userReviewDAO.save(review);
+            }
+            List<UserReview> reviewsReviewer = userReviewDAO.findForReviewer(currentUser.getUsername());
+            for (UserReview review : reviewsReviewer) {
+                review.setReviewer(null);
+                userReviewDAO.save(review);
+            }
+            List<Passenger> passengers = passengerDAO.findByUsername(currentUser.getUsername());
+            for (Passenger passenger : passengers) {
+                passenger.setUser(null);
+                passengerDAO.save(passenger);
+            }
+            List<SharedDrive> drives = sharedDriveDAO.findByUser(currentUser.getUsername());
+            for (SharedDrive drive : drives) {
+                List<UserReview> driveReviews = userReviewDAO.findForDrive(drive.getId());
+                for (UserReview review : driveReviews) {
+                    review.setSharedDrive(null);
+                    userReviewDAO.save(review);
+                }
+                sharedDriveDAO.delete(drive);
+            }
+            credentialsDAO.delete(credentials);
             dao.delete(currentUser);
             return Response.ok().build();
         } else {

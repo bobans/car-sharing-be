@@ -44,7 +44,7 @@ public class Credentials implements Principal {
     @Length(min = 8)
     private String password;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
     @ApiModelProperty(hidden = true)
     private AppUser user;
 
