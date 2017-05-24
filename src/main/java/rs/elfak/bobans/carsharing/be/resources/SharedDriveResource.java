@@ -183,8 +183,17 @@ public class SharedDriveResource {
     @UnitOfWork
     @PermitAll
     @Path("/user/{username}")
-    public List<SharedDrive> getByUser(@Context SecurityContext context, @PathParam("username") String username) {
-        return dao.findByUser(username);
+    public List<SharedDrive> getByUser(@Context SecurityContext context, @PathParam("username") String username, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+        return dao.findByUser(username, offset, limit);
+    }
+
+    @Timed
+    @GET
+    @UnitOfWork
+    @PermitAll
+    @Path("/user/me")
+    public List<SharedDrive> getMyDrive(@Context SecurityContext context, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+        return dao.findByUser(((Credentials) context.getUserPrincipal()).getUsername(), offset, limit);
     }
 
     @Timed

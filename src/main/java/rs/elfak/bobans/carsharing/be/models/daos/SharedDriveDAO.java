@@ -46,6 +46,10 @@ public class SharedDriveDAO extends AbstractDAO<SharedDrive> implements DAO<Shar
         return list(namedQuery("SharedDrive.findByUser").setParameter("username", username));
     }
 
+    public List<SharedDrive> findByUser(String username, int offset, int limit) {
+        return list(namedQuery("SharedDrive.findByUser").setParameter("username", username).setFirstResult(offset).setMaxResults(limit));
+    }
+
     public List<SharedDrive> filterDrives(DateTime date, String repeatDays, int offset, int limit) {
         String days = "";
         boolean lastQ = false;
