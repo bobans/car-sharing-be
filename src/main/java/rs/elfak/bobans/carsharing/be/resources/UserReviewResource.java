@@ -51,8 +51,8 @@ public class UserReviewResource {
     @POST
     @UnitOfWork
     @PermitAll
-    @Path("/driver/{driveId}")
-    public Response reviewDriver(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("driveId") long driveId, @NotNull ReviewRequest review) {
+    @Path("/{drive_id}/driver")
+    public Response reviewDriver(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("drive_id") long driveId, @NotNull ReviewRequest review) {
         if (username.compareTo(((Credentials) context.getUserPrincipal()).getUsername()) != 0) {
             AppUser reviewer = ((Credentials) context.getUserPrincipal()).getUser();
             AppUser driver = userDAO.findByUsername(username);
@@ -86,8 +86,8 @@ public class UserReviewResource {
     @POST
     @UnitOfWork
     @PermitAll
-    @Path("/passenger/{driveId}")
-    public Response reviewPassenger(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("driveId") long driveId, @NotNull ReviewRequest review) {
+    @Path("/{drive_id}/passenger")
+    public Response reviewPassenger(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("drive_id") long driveId, @NotNull ReviewRequest review) {
         if (username.compareTo(((Credentials) context.getUserPrincipal()).getUsername()) != 0) {
             AppUser reviewer = ((Credentials) context.getUserPrincipal()).getUser();
             AppUser passenger = userDAO.findByUsername(username);
@@ -121,8 +121,8 @@ public class UserReviewResource {
     @POST
     @UnitOfWork
     @PermitAll
-    @Path("/companion/{driveId}")
-    public Response reviewCompanion(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("driveId") long driveId, @NotNull ReviewRequest review) {
+    @Path("/{drive_id}/companion")
+    public Response reviewCompanion(@Context SecurityContext context, @Valid @NotNull @PathParam("username") String username, @Valid @NotNull @PathParam("drive_id") long driveId, @NotNull ReviewRequest review) {
         if (username.compareTo(((Credentials) context.getUserPrincipal()).getUsername()) != 0) {
             AppUser reviewer = ((Credentials) context.getUserPrincipal()).getUser();
             AppUser passenger = userDAO.findByUsername(username);

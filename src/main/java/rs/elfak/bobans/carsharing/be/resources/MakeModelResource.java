@@ -46,8 +46,8 @@ public class MakeModelResource {
     @GET
     @UnitOfWork
     @PermitAll
-    @Path("/{makeId}")
-    public Make getMakeById(@PathParam("makeId") long makeId) {
+    @Path("/{make_id}")
+    public Make getMakeById(@PathParam("make_id") long makeId) {
         return makeDAO.findById(makeId);
     }
 
@@ -55,8 +55,8 @@ public class MakeModelResource {
     @GET
     @UnitOfWork
     @PermitAll
-    @Path("/{makeId}/models")
-    public List<Model> getModelsByMake(@PathParam("makeId") long makeId) {
+    @Path("/{make_id}/models")
+    public List<Model> getModelsByMake(@PathParam("make_id") long makeId) {
         return modelDAO.findByMake(makeId);
     }
 
@@ -64,8 +64,8 @@ public class MakeModelResource {
     @GET
     @UnitOfWork
     @PermitAll
-    @Path("/{makeId}/models/{modelId}")
-    public Model getModelsByMake(@PathParam("makeId") long makeId, @PathParam("modelId") long modelId) {
+    @Path("/{make_id}/models/{model_id}")
+    public Model getModelsByMake(@PathParam("make_id") long makeId, @PathParam("model_id") long modelId) {
         return modelDAO.findByMakeAndModel(makeId, modelId);
     }
 

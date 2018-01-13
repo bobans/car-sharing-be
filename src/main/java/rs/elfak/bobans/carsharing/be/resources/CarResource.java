@@ -55,8 +55,8 @@ public class CarResource {
     @GET
     @UnitOfWork
     @PermitAll
-    @Path("/{carId}")
-    public Car getCarById(@Context SecurityContext context, @PathParam("carId") long carId) {
+    @Path("/{car_id}")
+    public Car getCarById(@Context SecurityContext context, @PathParam("car_id") long carId) {
         return carDAO.findById(carId);
     }
 

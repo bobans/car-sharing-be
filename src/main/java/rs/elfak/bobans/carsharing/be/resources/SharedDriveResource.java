@@ -84,10 +84,10 @@ public class SharedDriveResource {
     @PUT
     @UnitOfWork
     @PermitAll
-    @Path("/{driveId}/request/{passengerId}/{status}")
+    @Path("/{drive_id}/request/{passenger_id}/{status}")
     public Response updateRequest(@Context SecurityContext context,
-                                  @PathParam("driveId") long driveId,
-                                  @PathParam("passengerId") long passengerId,
+                                  @PathParam("drive_id") long driveId,
+                                  @PathParam("passenger_id") long passengerId,
                                   @PathParam("status") short status) {
         AppUser user = userDAO.findByUsername(((Credentials) context.getUserPrincipal()).getUsername());
         if (user != null) {
