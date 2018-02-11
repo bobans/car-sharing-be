@@ -28,6 +28,10 @@ import java.util.List;
         @NamedQuery(
                 name = "User.findByUsername",
                 query = "SELECT u FROM AppUser u WHERE u.username = :username"
+        ),
+        @NamedQuery(
+                name = "User.findByEmail",
+                query = "SELECT u FROM AppUser u WHERE u.email = :email"
         )
 })
 public class AppUser {

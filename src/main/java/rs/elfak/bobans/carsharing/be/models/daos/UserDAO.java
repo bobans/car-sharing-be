@@ -40,6 +40,10 @@ public class UserDAO extends AbstractDAO<AppUser> implements DAO<AppUser> {
         return uniqueResult(namedQuery("User.findByUsername").setParameter("username", username));
     }
 
+    public AppUser findByEmail(String email) {
+        return uniqueResult(namedQuery("User.findByEmail").setParameter("email", email));
+    }
+
     public void delete(AppUser user) {
         currentSession().delete(user);
     }

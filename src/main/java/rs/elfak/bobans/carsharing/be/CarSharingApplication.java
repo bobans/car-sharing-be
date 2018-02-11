@@ -111,5 +111,6 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
         environment.jersey().register(new FCMResource(userDAO, firebaseTokenDAO));
         environment.jersey().register(MultiPartFeature.class);
         environment.jersey().register(new UserReviewResource(userDAO, userReviewDAO, driveDAO));
+        environment.jersey().register(new ResetPasswordResource(userDAO, credentialsDAO));
     }
 }
