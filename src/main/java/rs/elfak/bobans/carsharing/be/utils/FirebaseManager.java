@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
+import rs.elfak.bobans.carsharing.be.models.AppUser;
 import rs.elfak.bobans.carsharing.be.models.Passenger;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
 import rs.elfak.bobans.carsharing.be.models.SharedDriveRequest;
@@ -18,6 +19,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by Boban Stajic.
@@ -62,6 +64,14 @@ public class FirebaseManager {
     public static void notifyUserDriveRequestCanceled(SharedDrive drive, Passenger passenger) {
         for (FirebaseToken token : drive.getUser().getFirebaseTokens()) {
             sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.DRIVE_REQUEST_CANCELED, new SharedDriveRequest(drive, passenger)));
+        }
+    }
+
+    public static void notifyNewSharedDrive(List<AppUser> users, SharedDrive sharedDrive) {
+        for (AppUser user : users) {
+            for (FirebaseToken token : user.getFirebaseTokens()) {
+                sendPushNotification(token.getToken(), new FirebaseMessageData<>(FirebaseMessageData.MessageType.NEW_DRIVE, sharedDrive));
+            }
         }
     }
 

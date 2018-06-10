@@ -20,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -203,6 +204,14 @@ public class SharedDriveResource {
     public Response addDrive(@Context SecurityContext context, @NotNull @Valid SharedDrive drive) {
         long id = dao.save(drive);
         if (id > 0) {
+            List<String> stops = new ArrayList<>();
+            stops.add(drive.getDeparture());
+            if (drive.getStops() != null) {
+                stops.addAll(drive.getStops());
+            }
+            stops.add(drive.getDestination());
+            List<AppUser> users = userDAO.findByStops(stops, ((Credentials) context.getUserPrincipal()).getUsername());
+            FirebaseManager.notifyNewSharedDrive(users, drive);
             return Response.created(null).build();
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "Can't save drive")).build();

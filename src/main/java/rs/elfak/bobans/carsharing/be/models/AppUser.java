@@ -8,7 +8,6 @@ import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -33,6 +32,10 @@ import java.util.List;
         @NamedQuery(
                 name = "User.findByEmail",
                 query = "SELECT u FROM AppUser u WHERE u.email = :email"
+        ),
+        @NamedQuery(
+                name = "User.findByStops",
+                query = "SELECT u FROM AppUser u WHERE u.username <> :username AND (u.storedDirection.start IN :stops OR u.storedDirection.stop IN :stops)"
         )
 })
 public class AppUser {
