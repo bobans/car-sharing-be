@@ -2,10 +2,9 @@ package rs.elfak.bobans.carsharing.be.models.daos;
 
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
-import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.SharedDrive;
-import rs.elfak.bobans.carsharing.be.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,23 +49,25 @@ public class SharedDriveDAO extends AbstractDAO<SharedDrive> implements DAO<Shar
         return list(namedQuery("SharedDrive.findByUser").setParameter("username", username).setFirstResult(offset).setMaxResults(limit));
     }
 
-    public List<SharedDrive> filterDrives(DateTime date, String repeatDays, int offset, int limit) {
-        String days = "";
-        boolean lastQ = false;
-        for (int i=0; i< Constants.DAYS_IN_WEEK.length; i++) {
-            if (repeatDays.contains(Constants.DAYS_IN_WEEK[i])) {
-                days += Constants.DAYS_IN_WEEK[i];
-                lastQ = false;
-            } else if (!lastQ) {
-                days += "%";
-                lastQ = true;
-            }
-        }
-        return list(namedQuery("SharedDrive.filter")
-                .setParameter("date", date)
-                .setParameter("days", days)
+    public List<SharedDrive> filterDrives(String departure, String destination, int offset, int limit) {
+        List<SharedDrive> drives = list(namedQuery("SharedDrive.filter")
+                .setParameter("departure", departure)
+                .setParameter("destination", destination)
                 .setFirstResult(offset)
                 .setMaxResults(limit));
+        List<SharedDrive> result = new ArrayList<>();
+        for (SharedDrive drive : drives) {
+            List<String> stops = new ArrayList<>();
+            stops.add(drive.getDeparture());
+            if (drive.getStops() != null) {
+                stops.addAll(drive.getStops());
+            }
+            stops.add(drive.getDestination());
+            if (stops.indexOf(departure) < stops.indexOf(destination)) {
+                result.add(drive);
+            }
+        }
+        return result;
     }
 
 }

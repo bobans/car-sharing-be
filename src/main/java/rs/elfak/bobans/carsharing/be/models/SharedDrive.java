@@ -24,7 +24,7 @@ import java.util.List;
                 ),
                 @NamedQuery(
                         name = "SharedDrive.filter",
-                        query = "SELECT sd FROM SharedDrive sd WHERE sd.time.date = :date OR sd.time.repeat = TRUE AND sd.time.date < :date AND sd.time.repeatDays LIKE :days"
+                        query = "SELECT DISTINCT sd FROM SharedDrive sd LEFT JOIN sd.stops s WHERE (sd.departure LIKE :departure OR s LIKE :departure) AND (s LIKE :destination OR sd.destination LIKE :destination)"
                 )
         }
 )

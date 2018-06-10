@@ -11,6 +11,7 @@ import rs.elfak.bobans.carsharing.be.models.*;
 import rs.elfak.bobans.carsharing.be.models.daos.*;
 import rs.elfak.bobans.carsharing.be.utils.ResponseMessage;
 
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -206,6 +207,10 @@ public class UserResource {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveFilter(@Context SecurityContext context, @NotNull DriveDirection filter) {
+        return saveFilterInternally(context, filter);
+    }
+
+    private Response saveFilterInternally(@Context SecurityContext context, @Nullable DriveDirection filter) {
         Credentials credentials = (Credentials) context.getUserPrincipal();
         AppUser currentUser = dao.findByUsername(credentials.getUsername());
         if (currentUser != null) {
@@ -218,6 +223,16 @@ public class UserResource {
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
         }
+    }
+
+    @Timed
+    @Path("/filter")
+    @DELETE
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response clearFilter(@Context SecurityContext context) {
+        return saveFilterInternally(context, null);
     }
 
     @Timed

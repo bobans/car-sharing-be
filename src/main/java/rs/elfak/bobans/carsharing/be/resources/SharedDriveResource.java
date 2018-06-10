@@ -3,7 +3,6 @@ package rs.elfak.bobans.carsharing.be.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
-import org.joda.time.DateTime;
 import rs.elfak.bobans.carsharing.be.models.*;
 import rs.elfak.bobans.carsharing.be.models.daos.PassengerDAO;
 import rs.elfak.bobans.carsharing.be.models.daos.SharedDriveDAO;
@@ -222,8 +221,8 @@ public class SharedDriveResource {
     @UnitOfWork
     @PermitAll
     @Path("/filter")
-    public List<SharedDrive> filterDrives(@Context SecurityContext context, @QueryParam("date") String date, @QueryParam("repeatDays") String repeatDays, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
-        return dao.filterDrives(DateTime.parse(date), repeatDays, offset, limit);
+    public List<SharedDrive> filterDrives(@Context SecurityContext context, @QueryParam("departure") String departure, @QueryParam("destination") String destination, @QueryParam("offset") int offset, @QueryParam("limit") int limit) {
+        return dao.filterDrives(departure, destination, offset, limit);
     }
 
 }
