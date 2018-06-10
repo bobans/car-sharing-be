@@ -39,7 +39,8 @@ public class CarSharingApplication extends Application<CarSharingConfiguration> 
             DrivePrice.class,
             Passenger.class,
             FirebaseToken.class,
-            UserReview.class
+            UserReview.class,
+            DriveDirection.class
     ) {
         @Override
         public DataSourceFactory getDataSourceFactory(CarSharingConfiguration configuration) {

@@ -199,4 +199,41 @@ public class UserResource {
         }
     }
 
+    @Timed
+    @Path("/filter")
+    @POST
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveFilter(@Context SecurityContext context, @NotNull DriveDirection filter) {
+        Credentials credentials = (Credentials) context.getUserPrincipal();
+        AppUser currentUser = dao.findByUsername(credentials.getUsername());
+        if (currentUser != null) {
+            currentUser.setStoredDirection(filter);
+            dao.save(currentUser);
+            if (filter != null) {
+                return Response.ok(filter).build();
+            }
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
+        }
+    }
+
+    @Timed
+    @Path("/filter")
+    @GET
+    @UnitOfWork
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getFilter(@Context SecurityContext context) {
+        Credentials credentials = (Credentials) context.getUserPrincipal();
+        AppUser currentUser = dao.findByUsername(credentials.getUsername());
+        if (currentUser != null) {
+            return Response.ok(currentUser.getStoredDirection()).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ResponseMessage(Response.Status.BAD_REQUEST.getStatusCode(), "User not found")).build();
+        }
+    }
+
 }

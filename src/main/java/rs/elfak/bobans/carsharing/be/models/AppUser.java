@@ -8,6 +8,7 @@ import rs.elfak.bobans.carsharing.be.models.firebase.FirebaseToken;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.List;
 
 /**
@@ -78,6 +79,9 @@ public class AppUser {
 
     @Formula("(SELECT AVG(ur.score) FROM UserReview ur WHERE ur.user_id = id)")
     private Double averageScore;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private DriveDirection storedDirection;
 
     public AppUser() {
     }
@@ -162,6 +166,14 @@ public class AppUser {
 
     public void setAverageScore(double averageScore) {
         this.averageScore = averageScore;
+    }
+
+    public DriveDirection getStoredDirection() {
+        return storedDirection;
+    }
+
+    public void setStoredDirection(DriveDirection storedDirection) {
+        this.storedDirection = storedDirection;
     }
 
 }
